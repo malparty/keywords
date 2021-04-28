@@ -1,6 +1,6 @@
 using System;
 
-namespace keywords.Models
+namespace KeywordsApp.Models
 {
     public class ErrorViewModel
     {
