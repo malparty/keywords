@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using KeywordsApp.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
+using Microsoft.Extensions.Logging;
 
 namespace KeywordsApp
 {
@@ -39,6 +41,11 @@ namespace KeywordsApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            // Dev & Test
+            if (!env.IsProduction())
+            {
+                CreateDbIfNotExists(app);
+            }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -52,6 +59,24 @@ namespace KeywordsApp
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private static void CreateDbIfNotExists(IApplicationBuilder host)
+        {
+            using (var scope = host.ApplicationServices.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<KeywordContext>();
+                    DbInitializer.Initialize(context);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred creating the DB.");
+                }
+            }
         }
     }
 }
