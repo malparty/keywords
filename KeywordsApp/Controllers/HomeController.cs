@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using KeywordsApp.Models;
 using KeywordsApp.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace keywords.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
