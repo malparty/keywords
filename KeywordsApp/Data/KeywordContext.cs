@@ -15,7 +15,12 @@ namespace KeywordsApp.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Keyword>().ToTable("Keywords");
+            modelBuilder.Entity<User>();
+            modelBuilder.Entity<User>().HasIndex(i => i.FirstName, "FirstnameIndex");
+            modelBuilder.Entity<User>().HasIndex(i => i.LastName, "LastnameIndex");
+            modelBuilder.Entity<User>().ToTable("Users");
+
+            modelBuilder.Entity<Keyword>().HasIndex(i => i.Name, "NameIndex");
         }
     }
 }
