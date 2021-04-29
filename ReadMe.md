@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/malparty/keywords/workflows/Tests/badge.svg?branch=main)](https://github.com/malparty/keywords)
+[![Build Status](https://github.com/malparty/keywords/workflows/test/badge.svg?branch=main)](https://github.com/malparty/keywords)
 
 # Introduction
 
