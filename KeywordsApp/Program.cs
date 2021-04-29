@@ -21,7 +21,8 @@ namespace KeywordsApp
             Host.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration((hostingContext, config) =>
             {
-                config.AddEnvironmentVariables(prefix: "");
+                config.AddEnvironmentVariables(prefix: "ASPNETCORE_");
+                config.AddCommandLine(args);
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {

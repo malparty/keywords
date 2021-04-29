@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace KeywordApp.Tests
+namespace KeywordsApp.Tests
 {
     public class UnitTest1
     {

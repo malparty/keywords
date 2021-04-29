@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM mcr.microsoft.com/dotnet/sdk:5.0
-COPY . /keywordsApp
-WORKDIR /keywordsApp
+COPY . /keywords
+WORKDIR /keywords
 RUN dotnet tool install --global dotnet-ef
 RUN ["dotnet", "restore"]
 RUN ["dotnet", "build"]
