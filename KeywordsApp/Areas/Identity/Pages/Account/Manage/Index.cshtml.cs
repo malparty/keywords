@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using KeywordsApp.Models;
 using Microsoft.AspNetCore.Identity;
@@ -33,6 +30,15 @@ namespace KeywordsApp.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
+
+            [Required]
+            [Display(Name = "Lastname")]
+            public string LastName { get; set; }
+
+            [Required]
+            [Display(Name = "Firstname")]
+            public string FirstName { get; set; }
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -47,7 +53,9 @@ namespace KeywordsApp.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                LastName = user.LastName,
+                FirstName = user.FirstName
             };
         }
 
@@ -81,12 +89,17 @@ namespace KeywordsApp.Areas.Identity.Pages.Account.Manage
             if (Input.PhoneNumber != phoneNumber)
             {
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+
                 if (!setPhoneResult.Succeeded)
                 {
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();
                 }
             }
+
+            user.LastName = Input.LastName;
+            user.FirstName = Input.FirstName;
+            await _userManager.UpdateAsync(user);
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
