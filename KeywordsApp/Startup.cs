@@ -10,6 +10,8 @@ using System;
 using Microsoft.Extensions.Logging;
 using KeywordsApp.Models;
 using KeywordsApp.Areas.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using KeywordsApp.Areas.Identity.Services;
 
 namespace KeywordsApp
 {
@@ -36,6 +38,9 @@ namespace KeywordsApp
             .AddEntityFrameworkStores<KeywordContext>()
             .AddDefaultTokenProviders()
             .AddDefaultUI();
+
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.AddRazorPages();
 
