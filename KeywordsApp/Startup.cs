@@ -9,6 +9,7 @@ using KeywordsApp.Data;
 using System;
 using Microsoft.Extensions.Logging;
 using KeywordsApp.Models;
+using KeywordsApp.Areas.Identity;
 
 namespace KeywordsApp
 {
@@ -37,6 +38,8 @@ namespace KeywordsApp
             .AddDefaultUI();
 
             services.AddRazorPages();
+
+            services.AddScoped<IUserClaimsPrincipalFactory<User>, UserClaimsPrincipalFactory>();
 
             services.AddDbContext<KeywordContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("KeywordConnection"))
