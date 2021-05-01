@@ -25,7 +25,7 @@ namespace KeywordsApp.Areas.Identity.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("keywords@malparty.fr", Options.SendGridUser),
+                From = new EmailAddress(Options.SendFromEmailAddress, Options.SendGridUser),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
