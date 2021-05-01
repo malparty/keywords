@@ -29,7 +29,6 @@ namespace keywords.Controllers
 
         public async Task<IActionResult> Index()
         {
-            const string GOOGLE_URL = "https://www.google.com/search";
             var searchResults = new List<KeyResult>();
             var queryList = new string[]{"bonjour", "palace","minister","outline",
                         "veteran","ethics","swing","inspiration",
@@ -53,9 +52,13 @@ namespace keywords.Controllers
                         "scramble","splurge","sink","gregarious","feel","football","satisfaction","flawed","reporter",
                         "deteriorate","move","excess","sanctuary"};
 
+
+            var proxyServers = new string[]{"us13",
+                            "eu2","us1","us2","us3","us4","us5","us6","us7","us8","us9","us10",
+                            "us11","us12","us13","us14","us15","us16","us17","eu1","eu2","eu3","eu4","eu5","eu6",
+                            "eu7","eu8","eu9","eu10","eu11","eu12","eu13","eu14","eu15"};
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri(GOOGLE_URL);
 
                 // Build Client header
                 // The user agent describe to google which device is requesting.
@@ -75,40 +78,53 @@ namespace keywords.Controllers
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("image/apng"));
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/signed-exchange"));
-
+                
                 // Set language to english
                 client.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-US");
 
-                foreach (var keyword in queryList.Take(1))
+                foreach (var keyword in queryList) // .Take(1)
                 {
-
-
-                    // List data response.
-                    HttpResponseMessage respGoogle = client.GetAsync("?q=" + keyword).Result;
-                    if (respGoogle.IsSuccessStatusCode)
+                    foreach (var proxyServer in proxyServers)
                     {
-                        respGoogle.EnsureSuccessStatusCode();
-                        searchResults.Add(new KeyResult
+
+                        // Call proxy with Server arg and Google query:
+                        var queryGoogle = "https://www.google.com/search?q=" + keyword;
+                        var proxyUrl = "https://" + proxyServer + ".proxysite.com/includes/process.php?action=update";
+
+                        var formContent = new FormUrlEncodedContent(new[]
                         {
-                            Keyword = keyword,
-                            PageContent = await respGoogle.Content.ReadAsStringAsync()
+                            new KeyValuePair<string, string>("d", queryGoogle),
+                            new KeyValuePair<string, string>("server-option", proxyServer),
                         });
-                        break; // No need to switch to another proxy;
-                    }
-                    // Too many requests - bot detected
-                    else if ((int)respGoogle.StatusCode == 429)
-                    {
-                        Console.WriteLine("Google send '429 (Too many requests)");
-                        Console.WriteLine("Trying another server");
-                        continue;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Parsing Google unsufessful:");
-                        Console.WriteLine("{0} ({1})", (int)respGoogle.StatusCode, respGoogle.ReasonPhrase);
-                        continue;
 
+                        client.BaseAddress = new Uri(proxyUrl);
+                        HttpResponseMessage respProxy = client.PostAsync(proxyUrl, formContent).Result;
+                        if (respProxy.IsSuccessStatusCode)
+                        {
+                            searchResults.Add(new KeyResult
+                            {
+                                Keyword = keyword,
+                                PageContent = await respProxy.Content.ReadAsStringAsync()
+                            });
+                            break; // No need to try with another server
+                        }
+                        // Too many requests - bot detected
+                        else if ((int)respProxy.StatusCode == 429)
+                        {
+                            Console.WriteLine("Proxy send '429 (Too many requests)");
+                            Console.WriteLine("Trying another server");
+                            continue;
+                        }
+                        else
+                        {
+                            // Need to try with another server
+                            Console.WriteLine("Parsing Proxy unsufessful:");
+                            Console.WriteLine("{0} ({1})", (int)respProxy.StatusCode, respProxy.ReasonPhrase);
+                            continue;
+                        }
                     }
+
+
                 }
             }
 
