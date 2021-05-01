@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using HtmlAgilityPack;
+using System.Threading;
 
 namespace keywords.Controllers
 {
@@ -29,6 +30,12 @@ namespace keywords.Controllers
 
         public async Task<IActionResult> Index()
         {
+            //
+            //
+            // IMPROVEMENT: can have 2 threads (one using proxy, the other one direct google?)
+            //
+            //
+
             var searchResults = new List<KeyResult>();
             var queryList = new string[]{"bonjour", "palace","minister","outline",
                         "veteran","ethics","swing","inspiration",
@@ -60,45 +67,58 @@ namespace keywords.Controllers
             using (HttpClient client = new HttpClient())
             {
 
-                // Build Client header
-                // The user agent describe to google which device is requesting.
-                // It enable us to get Desktop-style UI instead of Mobile version (that does not include stats)
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("AppleWebKit/537.36 (KHTML, like Gecko)");
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("Chrome/90.0.4430.85");
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("Safari/537.36");
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("Edg/90.0.818.49");
 
-                // Add an Accept header for JSON format.
-                // These correspond to what a classic web browser would expose
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xhtml+xml"));
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("image/webp"));
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("image/apng"));
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/signed-exchange"));
-                
-                // Set language to english
-                client.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-US");
-
-                foreach (var keyword in queryList) // .Take(1)
+                foreach (var keyword in queryList.Take(100)) // .Take(1)
                 {
+                    Console.WriteLine("Parsing new keyword: " + keyword);
                     foreach (var proxyServer in proxyServers)
                     {
+                        Console.WriteLine("Server: " + proxyServer);
 
                         // Call proxy with Server arg and Google query:
-                        var queryGoogle = "https://www.google.com/search?q=" + keyword;
+                        const string GOOGLE_URI = "https://www.google.com/search";
+                        var queryGoogle = GOOGLE_URI + "?q=" + keyword;
                         var proxyUrl = "https://" + proxyServer + ".proxysite.com/includes/process.php?action=update";
 
-                        var formContent = new FormUrlEncodedContent(new[]
-                        {
-                            new KeyValuePair<string, string>("d", queryGoogle),
-                            new KeyValuePair<string, string>("server-option", proxyServer),
-                        });
+                        // Build request:
+                        var request = new HttpRequestMessage(HttpMethod.Get, queryGoogle);
+                        // var request = new HttpRequestMessage(HttpMethod.Post, proxyUrl);
 
-                        client.BaseAddress = new Uri(proxyUrl);
-                        HttpResponseMessage respProxy = client.PostAsync(proxyUrl, formContent).Result;
+                        // Build Client header
+                        request.Headers.Accept.Clear();
+                        // The user agent describe to google which device is requesting.
+                        // It enable us to get Desktop-style UI instead of Mobile version (that does not include stats)
+                        request.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+                        request.Headers.UserAgent.ParseAdd("AppleWebKit/537.36 (KHTML, like Gecko)");
+                        request.Headers.UserAgent.ParseAdd("Chrome/90.0.4430.85");
+                        request.Headers.UserAgent.ParseAdd("Safari/537.36");
+                        request.Headers.UserAgent.ParseAdd("Edg/90.0.818.49");
+
+                        // Add an Accept header for JSON format.
+                        // These correspond to what a classic web browser would expose
+                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
+                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xhtml+xml"));
+                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("image/webp"));
+                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("image/apng"));
+                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
+                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/signed-exchange"));
+
+                        // Set language to english
+                        request.Headers.AcceptLanguage.ParseAdd("en-US");
+
+
+                        // // Set proxy form submition content
+                        // var formContent = new FormUrlEncodedContent(new[]
+                        // {
+                        //     // new KeyValuePair<string, string>("q", keyword), // google
+
+                        //     new KeyValuePair<string, string>("d", queryGoogle), // proxy
+                        //     new KeyValuePair<string, string>("server-option", proxyServer), // proxy
+                        // });
+                        // request.Content = formContent;
+
+                        HttpResponseMessage respProxy = client.SendAsync(request, cancellationToken: CancellationToken.None).Result;
                         if (respProxy.IsSuccessStatusCode)
                         {
                             searchResults.Add(new KeyResult
@@ -112,6 +132,9 @@ namespace keywords.Controllers
                         else if ((int)respProxy.StatusCode == 429)
                         {
                             Console.WriteLine("Proxy send '429 (Too many requests)");
+                            Console.WriteLine(respProxy.Content);
+                            Console.WriteLine(respProxy.ReasonPhrase);
+                            Console.WriteLine(respProxy.Headers);
                             Console.WriteLine("Trying another server");
                             continue;
                         }
@@ -123,6 +146,9 @@ namespace keywords.Controllers
                             continue;
                         }
                     }
+
+                    // Preventing error 429 - Too many requests
+                    Thread.Sleep(3600);
 
 
                 }
