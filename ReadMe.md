@@ -8,35 +8,64 @@
 
 ## Prerequisites
 
-- dotnet 5.0.5 sdk
+- Install [dotnet 5.0.5 sdk](https://dotnet.microsoft.com/download/dotnet/5.0)
+
+- Set up Environment variables (for email sending)
+
+```javascript
+ "SendGridUser": "XXX",
+ "SendGridKey": "XXX"
+```
+
+> Use your own SendGrid API keys
 
 ## Docker
 
+_We use Docker for our PosgreSQL db only._
+
 - Install Docker [for Mac](https://docs.docker.com/docker-for-mac/install/), [for Windows](https://docs.docker.com/docker-for-windows/install/)
 
-- Setup and boot the Docker containers:
+- Setup the db container:
 
-```sh
-docker-compose build
-```
-
-```sh
-docker-compose up
-```
+  ```sh
+  docker-compose up
+  ```
 
 ## Run the app
 
-- Just run it
+- Enter the project folder
+
+  ```sh
+  cd .\KeywordsApp\
+  ```
+
+- Generate/Update the database
+
+  _You need dotnet-ef tool globally setup:_
+
+  ```sh
+  dotnet tool install --global dotnet-ef
+  ```
+
+  _Use this tool to update the database:_
+
+  ```sh
+  dotnet-ef database update
+  ```
+
+- Run the app
 
   ```sh
   dotnet run
   ```
 
-  > If the DB/Models does not exists in your Postgres container, the app will generate it.
-
 ## Development
 
 - Watch available:
+
+  ```sh
+  cd .\KeywordsApp\
+  ```
 
   ```sh
   dotnet watch run
@@ -44,8 +73,12 @@ docker-compose up
 
 ## Tests
 
-> TODO
+- unit tests can be run with this command (from root folder)
+
+```sh
+dotnet test
+```
 
 ## Github actions
 
-> TODO
+Unit tests will be run automatically at each push (any branch).
