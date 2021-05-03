@@ -12,12 +12,12 @@ using Microsoft.AspNetCore.Authorization;
 namespace keywords.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class FileController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<FileController> _logger;
         private readonly KeywordContext _dbContext;
 
-        public HomeController(ILogger<HomeController> logger, KeywordContext dbContext)
+        public FileController(ILogger<FileController> logger, KeywordContext dbContext)
         {
             _logger = logger;
             _dbContext = dbContext;
