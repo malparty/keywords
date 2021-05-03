@@ -36,8 +36,8 @@ namespace keywords.Controllers
             //
             //
             const int MAX_RETRY = 10;
-            const int INIT_SLEEP_TIME = 500; // ms
-            const int MIN_RETRY_SLEEP_TIME = 250; //ms
+            const int INIT_SLEEP_TIME = 0; // ms
+            const int MIN_RETRY_SLEEP_TIME = 0; //ms
             int sleepTime = INIT_SLEEP_TIME;
 
             var searchResults = new List<KeyResult>();
@@ -133,32 +133,23 @@ namespace keywords.Controllers
 
                         respProxy = client.SendAsync(request, cancellationToken: CancellationToken.None).Result;
                         // Preventing error 429 - Too many requests
-                        Thread.Sleep(sleepTime);
                         retryCount++;
 
                         // Faster if Success, slower if failed
-                        if (respProxy.IsSuccessStatusCode)
-                            sleepTime = sleepTime / 2;
-                        else if (sleepTime > 1100)
+
+                        // if (googleIndex == 0)
+                        // {
+                        //     googleIndex = 1;
+                        //     Console.WriteLine("Trying with Google Vietnam");
+                        //     continue; // Retry
+                        // }
+                        if (!respProxy.IsSuccessStatusCode)
                         {
-                            if (googleIndex == 0)
-                            {
-                                googleIndex = 1;
-                                Console.WriteLine("Trying with Google Vietnam");
-                                continue; // Retry
-                            }
-                            else
-                            {
-                                client.Dispose();
-                                client = new HttpClient();
-                                Console.WriteLine("Trying to dispose HttpClient");
-                                continue; // Retry
-                            }
+                            Console.WriteLine("Trying to dispose HttpClient (x" + retryCount + ")");
+                            client.Dispose();
+                            client = new HttpClient();
                         }
-                        else
-                            sleepTime = sleepTime < MIN_RETRY_SLEEP_TIME ? MIN_RETRY_SLEEP_TIME : sleepTime * 2;
-                        Console.WriteLine("New sleep time: " + sleepTime);
-                    }
+                    } // Exit loop with Successful request or Max Retry count reached.
                     while (retryCount < MAX_RETRY && !respProxy.IsSuccessStatusCode);
 
                     if (respProxy.IsSuccessStatusCode)
