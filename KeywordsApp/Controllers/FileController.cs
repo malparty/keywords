@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using KeywordsApp.Models.File;
+using Microsoft.Extensions.Configuration;
 
 namespace keywords.Controllers
 {
@@ -19,11 +20,13 @@ namespace keywords.Controllers
     {
         private readonly ILogger<FileController> _logger;
         private readonly KeywordContext _dbContext;
+        private readonly IConfiguration _config;
 
-        public FileController(ILogger<FileController> logger, KeywordContext dbContext)
+        public FileController(ILogger<FileController> logger, KeywordContext dbContext, IConfiguration config)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _config = config;
         }
 
         public IActionResult Index()
@@ -38,7 +41,7 @@ namespace keywords.Controllers
         [RequestFormLimits(MultipartBodyLengthLimit = 10000)]
         public async Task<IActionResult> UploadForm(IFormFile csvFile)
         {
-            var uploadFormViewModel = new UploadFormViewModel(csvFile);
+            var uploadFormViewModel = new UploadFormViewModel(csvFile, _config);
 
             return PartialView("_UploadForm", uploadFormViewModel);
         }

@@ -12,6 +12,7 @@ using KeywordsApp.Models;
 using KeywordsApp.Areas.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using KeywordsApp.Areas.Identity.Services;
+using KeywordsApp.Models.File;
 
 namespace KeywordsApp
 {
@@ -41,6 +42,8 @@ namespace KeywordsApp
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
+            services.Configure<UploadFormOptions>(Configuration);
+
 
             services.AddRazorPages();
 
