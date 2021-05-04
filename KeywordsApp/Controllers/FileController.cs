@@ -33,7 +33,7 @@ namespace keywords.Controllers
 
         [HttpPost]
         [Route("File/Upload")]
-        // [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         // Set the limit to 10 Kb
         [RequestFormLimits(MultipartBodyLengthLimit = 10000)]
         public async Task<IActionResult> UploadForm(IFormFile csvFile)

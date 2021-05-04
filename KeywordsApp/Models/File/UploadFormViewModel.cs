@@ -32,12 +32,15 @@ namespace KeywordsApp.Models.File
 
         private void parse(IFormFile csvFile)
         {
-            CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
+            CsvParserOptions csvParserOptions = new CsvParserOptions(false, ',');
             var csvParser = new CsvParser<string[]>(csvParserOptions, new CsvStringArrayMapping());
 
             var records = csvParser.ReadFromStream(csvFile.OpenReadStream(), Encoding.UTF8);
 
             Keywords = records.Select(x => x.Result[0]).ToList();
+
+            if (Keywords.Count <= 0)
+                ErrorMsg = "No keyword found in the provided csv file.";
         }
 
     }
