@@ -114,8 +114,23 @@ namespace KeywordsApp.Tests.File
                 Assert.True(uploadForm.HasError);
             }
 
+
             [Fact]
-            public void ParseMethod3_NormalCsv_GetNoError()
+            public void ParseMethod3_CsvHasMoreThan100Keywords_GetError()
+            {
+                var keywords = "";
+                for (int i = 0; i < 101; i++)
+                {
+                    keywords += i.ToString() + "\r";
+                }
+                var formFile = new StubFormFile(keywords);
+                var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
+
+                Assert.True(uploadForm.HasError);
+            }
+
+            [Fact]
+            public void ParseMethod4_NormalCsv_GetNoError()
             {
                 var formFile = new StubFormFile("helloWorld");
                 var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);

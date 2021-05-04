@@ -17,6 +17,7 @@ namespace KeywordsApp.Models.File
         public string ErrorMsg { get; set; }
         public string SuccessMsg { get; set; }
         public bool HasError { get { return !string.IsNullOrEmpty(ErrorMsg); } }
+
         public UploadFormViewModel(IFormFile csvFile, IConfiguration config)
         {
             initConfig(config);
@@ -49,10 +50,18 @@ namespace KeywordsApp.Models.File
             Keywords = records.Select(x => x.Result[0]).ToList();
 
             if (Keywords.Count <= 0)
+            {
                 ErrorMsg = "No keyword found in the provided csv file.";
+                return;
+            }
+
+            if (Keywords.Count > 100)
+            {
+                ErrorMsg = "The file cannot contain more than 100 keywords.";
+                return;
+            }
 
             var keywordRegex = new Regex(@"^[^<>=:;.\{\}\[\]]+$");
-
             if (Keywords.Any(kw => !keywordRegex.IsMatch(kw)))
                 ErrorMsg = "Keywords with specical chars (<>=:.{}[]...) are not allowed.";
 
