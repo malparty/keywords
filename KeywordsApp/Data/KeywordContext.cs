@@ -1,4 +1,6 @@
 using KeywordsApp.Models;
+using KeywordsApp.Models.File;
+using KeywordsApp.Models.Keyword;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +12,8 @@ namespace KeywordsApp.Data
         {
         }
 
-        public DbSet<Keyword> Keywords { get; set; }
+        public DbSet<KeywordEntity> Keywords { get; set; }
+        public DbSet<FileEntity> Files { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,7 +23,7 @@ namespace KeywordsApp.Data
             modelBuilder.Entity<UserEntity>().HasIndex(i => i.LastName, "LastnameIndex");
             modelBuilder.Entity<UserEntity>().ToTable("Users");
 
-            modelBuilder.Entity<Keyword>().HasIndex(i => i.Name, "NameIndex");
+            modelBuilder.Entity<KeywordEntity>().HasIndex(i => i.Name, "NameIndex");
         }
     }
 }

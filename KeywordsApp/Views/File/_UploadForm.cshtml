@@ -10,7 +10,9 @@
             </label> 
             <span class="csv-form-file-name"></span>
           </div>
+          
             <span class="@("alert alert-danger csv-form-error-msg " + (Model != null && Model.HasError ? "":"hidden"))" >@Model?.ErrorMsg</span>
+            <span class="@("alert alert-success " + (string.IsNullOrEmpty(Model?.SuccessMsg) ? "hidden":""))" >@Model?.SuccessMsg</span>
             <div class="alert alert-primary csv-form-uploaded-msg hidden">Your csv file is being verified...</div>
         </div>
             <input type="file" id="csvFileInput" name="csvFile" accept=".csv" class="form-control csv-form-file-input hidden" />

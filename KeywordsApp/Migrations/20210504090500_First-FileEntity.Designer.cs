@@ -3,15 +3,17 @@ using System;
 using KeywordsApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace KeywordsApp.Migrations
 {
     [DbContext(typeof(KeywordContext))]
-    partial class KeywordContextModelSnapshot : ModelSnapshot
+    [Migration("20210504090500_First-FileEntity")]
+    partial class FirstFileEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

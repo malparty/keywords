@@ -15,6 +15,7 @@ namespace KeywordsApp.Models.File
         private int _maxCsvFileSizeUpload;
         public List<string> Keywords { get; set; }
         public string ErrorMsg { get; set; }
+        public string SuccessMsg { get; set; }
         public bool HasError { get { return !string.IsNullOrEmpty(ErrorMsg); } }
         public UploadFormViewModel(IFormFile csvFile, IConfiguration config)
         {

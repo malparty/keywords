@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using KeywordsApp.Models.File;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace keywords.Controllers
 {
@@ -39,17 +40,39 @@ namespace keywords.Controllers
         [ValidateAntiForgeryToken]
         // Set the limit to 10 Kb
         [RequestFormLimits(MultipartBodyLengthLimit = 10000)]
-        public IActionResult UploadForm(IFormFile csvFile)
+        public async Task<IActionResult> UploadForm(IFormFile csvFile)
         {
             var uploadFormViewModel = new UploadFormViewModel(csvFile, _config);
 
             if (uploadFormViewModel.HasError)
                 return PartialView("_UploadForm", uploadFormViewModel);
 
-            // TODO: If no errors, let's save that in DB:
-            return null;
+            var userId = _dbContext.Users.Where(x => x.Email == User.Identity.Name)
+                .Select(x => x.Id)
+                .FirstOrDefault();
 
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
 
+            var fileEntity = new FileEntity(userId, uploadFormViewModel.Keywords);
+            _dbContext.Files.Add(fileEntity);
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+                uploadFormViewModel.SuccessMsg = "File uploaded. Keyword are being processed.";
+            }
+            catch (DataException e)
+            {
+                _logger.LogError(0, e, "DataBase cannot persist a new File for user: " + userId);
+                uploadFormViewModel.ErrorMsg = "The file could not be saved. Please try again.";
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(0, e, "Db Context failed to persist File for user: " + userId);
+                uploadFormViewModel.ErrorMsg = "The file could not be saved. Please try again.";
+            }
+
+            return PartialView("_UploadForm", uploadFormViewModel);
         }
 
         public IActionResult Privacy()

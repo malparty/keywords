@@ -1,6 +1,6 @@
 @using Microsoft.AspNetCore.Identity
-@inject SignInManager<KeywordsApp.Models.User> SignInManager
-@inject UserManager<KeywordsApp.Models.User> UserManager
+@inject SignInManager<KeywordsApp.Models.UserEntity> SignInManager
+@inject UserManager<KeywordsApp.Models.UserEntity> UserManager
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
