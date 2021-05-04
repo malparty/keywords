@@ -2,35 +2,20 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="row">
-    @using(Html.BeginForm("Upload", "File", FormMethod.Post, new{@class = "csv-form novalidate"}))
-    {
-        <div class="form-validation">
-            <div class="flex-row">
-
-                <label class="btn btn-outline-primary" for="csvFileInput">
-                    <i class="fas fa-cloud-upload-alt" ></i>
-                    Upload a new CSV file
-                </label> 
-                <span class="csv-form-file-name"></span>
-                <span class="form-validation-invalid csv-form-error-msg"></span>
-            </div>
-                <input type="file" accept=".csv" class="form-control csv-form-file-input" id="csvFileInput" name="csvfile" hidden />
+@using(Html.BeginForm("Upload", "File", FormMethod.Post, new{@class = "csv-form novalidate"}))
+{
+    <div class="form-validation">
+        <div class="d-flex flex-column flex-lg-row justify-content-lg-between">
+          <div>
+            <label class="btn btn-outline-primary" for="csvFileInput">
+                <i class="fas fa-cloud-upload-alt" ></i>
+                Upload a new CSV file
+            </label> 
+            <span class="csv-form-file-name"></span>
+          </div>
+            <span class="alert alert-danger hidden csv-form-error-msg"></span>
+            <div class="alert alert-primary csv-form-uploaded-msg hidden">Your csv file is being verified...</div>
         </div>
-    }
-</div>
-
-@section Toasts {
-    <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
-    <div class="toast-header">
-        <i class="fas fa-check"></i>
-      <strong class="mr-auto"> CSV File uploaded</strong>
-      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
+            <input type="file" accept=".csv" class="form-control csv-form-file-input" id="csvFileInput" name="csvfile" hidden />
     </div>
-    <div class="toast-body">
-      Your file is being verified...
-    </div>
-  </div>
 }
