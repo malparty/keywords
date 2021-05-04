@@ -39,11 +39,17 @@ namespace keywords.Controllers
         [ValidateAntiForgeryToken]
         // Set the limit to 10 Kb
         [RequestFormLimits(MultipartBodyLengthLimit = 10000)]
-        public async Task<IActionResult> UploadForm(IFormFile csvFile)
+        public IActionResult UploadForm(IFormFile csvFile)
         {
             var uploadFormViewModel = new UploadFormViewModel(csvFile, _config);
 
-            return PartialView("_UploadForm", uploadFormViewModel);
+            if (uploadFormViewModel.HasError)
+                return PartialView("_UploadForm", uploadFormViewModel);
+
+            // TODO: If no errors, let's save that in DB:
+            return null;
+
+
         }
 
         public IActionResult Privacy()

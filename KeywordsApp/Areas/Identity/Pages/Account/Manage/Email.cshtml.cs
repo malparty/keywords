@@ -16,13 +16,13 @@ namespace KeywordsApp.Areas.Identity.Pages.Account.Manage
 {
     public partial class EmailModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<UserEntity> _userManager;
+        private readonly SignInManager<UserEntity> _signInManager;
         private readonly IEmailSender _emailSender;
 
         public EmailModel(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
+            UserManager<UserEntity> userManager,
+            SignInManager<UserEntity> signInManager,
             IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -50,7 +50,7 @@ namespace KeywordsApp.Areas.Identity.Pages.Account.Manage
             public string NewEmail { get; set; }
         }
 
-        private async Task LoadAsync(User user)
+        private async Task LoadAsync(UserEntity user)
         {
             var email = await _userManager.GetEmailAsync(user);
             Email = email;

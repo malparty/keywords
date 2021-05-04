@@ -31,7 +31,7 @@ namespace KeywordsApp
         {
             services.AddControllersWithViews();
 
-            services.AddIdentity<User, IdentityRole>(options =>
+            services.AddIdentity<UserEntity, IdentityRole>(options =>
              {
                  options.Password.RequireDigit = true;
                  options.Password.RequireUppercase = true;
@@ -47,7 +47,7 @@ namespace KeywordsApp
 
             services.AddRazorPages();
 
-            services.AddScoped<IUserClaimsPrincipalFactory<User>, UserClaimsPrincipalFactory>();
+            services.AddScoped<IUserClaimsPrincipalFactory<UserEntity>, UserClaimsPrincipalFactory>();
 
             services.AddDbContext<KeywordContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("KeywordConnection"))
