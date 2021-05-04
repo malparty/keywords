@@ -74,12 +74,23 @@ namespace KeywordsApp.Tests.File
 
                 Assert.True(uploadForm.HasError);
             }
+
+
+            [Fact]
+            public void ValidateFile5_NormalFileEmpty_GetNoError()
+            {
+                var stubFormFile = new StubFormFile();
+
+                var uploadForm = new UploadFormViewModel(stubFormFile, UploadFormViewModel_Tests.CONFIG);
+
+                Assert.False(uploadForm.HasError);
+            }
         }
 
         public class UploadFormViewModel_ParseMathod
         {
             [Fact]
-            public void ParseMethod_EmptyCsv_GetError()
+            public void ParseMethod1_EmptyCsv_GetError()
             {
                 var formFile = new StubFormFile("");
                 var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
@@ -87,14 +98,30 @@ namespace KeywordsApp.Tests.File
                 Assert.True(uploadForm.HasError);
             }
 
-            // [Fact]
-            // public void ParseMethod_EmptyCsv_GetError()
-            // {
-            //     var formFile = new StubFormFile("");
-            //     var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
+            [Theory]
+            [InlineData("key<>word")]
+            [InlineData("key[]word")]
+            [InlineData("key{}word")]
+            [InlineData("key=word")]
+            [InlineData("key;word")]
+            [InlineData("key:word")]
+            [InlineData(":")]
+            public void ParseMethod2_SpecialCharKeyword_GetError(string value)
+            {
+                var formFile = new StubFormFile(value);
+                var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
 
-            //     Assert.True(uploadForm.HasError);
-            // }
+                Assert.True(uploadForm.HasError);
+            }
+
+            [Fact]
+            public void ParseMethod3_NormalCsv_GetNoError()
+            {
+                var formFile = new StubFormFile("helloWorld");
+                var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
+
+                Assert.False(uploadForm.HasError);
+            }
         }
     }
 
@@ -103,6 +130,7 @@ namespace KeywordsApp.Tests.File
         public StubFormFile(string csvContent = "Hello,World,")
         {
             _fakeStream = new MemoryStream(Encoding.UTF8.GetBytes(csvContent));
+            Length = 1;
         }
         private Stream _fakeStream;
         public long Length { get; set; }

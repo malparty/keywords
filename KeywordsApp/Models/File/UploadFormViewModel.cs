@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using TinyCsvParser;
@@ -48,6 +49,12 @@ namespace KeywordsApp.Models.File
 
             if (Keywords.Count <= 0)
                 ErrorMsg = "No keyword found in the provided csv file.";
+
+            var keywordRegex = new Regex(@"^[^<>=:;.\{\}\[\]]+$");
+
+            if (Keywords.Any(kw => !keywordRegex.IsMatch(kw)))
+                ErrorMsg = "Keywords with specical chars (<>=:.{}[]...) are not allowed.";
+
         }
 
     }
