@@ -52,7 +52,7 @@ $(function () {
       cache: false,
       timeout: 600000,
       success: function (data) {
-        console.log('SUCCESS : ', data);
+        $('#uploadFormContainer').html(data);
       },
       error: function (e) {
         console.log('ERROR : ', e);

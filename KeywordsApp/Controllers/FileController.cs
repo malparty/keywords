@@ -36,32 +36,11 @@ namespace keywords.Controllers
         // [ValidateAntiForgeryToken]
         // Set the limit to 10 Kb
         [RequestFormLimits(MultipartBodyLengthLimit = 10000)]
-        public async Task<IActionResult> UploadForm(List<IFormFile> csvFile)
+        public async Task<IActionResult> UploadForm(IFormFile csvFile)
         {
-            if (csvFile == null || csvFile.Count != 1)
-            {
-                return PartialView(new UploadFormViewModel
-                {
-                    ErrorMsg = "File not found. Please try again with another file."
-                });
-            }
-            var file = csvFile.First();
-            if (file.Length <= 0)
-            {
-                return PartialView(new UploadFormViewModel
-                {
-                    ErrorMsg = "The file cannot be empty."
-                });
-            }
-            else if (file.Length > 10000)
-            {
-                return PartialView(new UploadFormViewModel
-                {
-                    ErrorMsg = "The file must be under 10Kb."
-                });
-            }
+            var uploadFormViewModel = new UploadFormViewModel(csvFile);
 
-            return PartialView();
+            return PartialView("_UploadForm", uploadFormViewModel);
         }
 
         public IActionResult Privacy()
