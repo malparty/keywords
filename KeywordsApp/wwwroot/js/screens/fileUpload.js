@@ -32,15 +32,11 @@ $(function () {
         errorMsgElt.show(250);
         fileNameElt.addClass('text-danger');
       } else {
-        // Run Post request
         uploadedMsgElt.show(250);
+        // Submit form
+        form.submit();
       }
       fileNameElt.html(file.name);
     }
-    // check file extension and type + limit in INPUT  first
-    // Send upload
-    // Show waiter
-    // Implement server side model validation
-    // Show error or Success message
   });
 });
