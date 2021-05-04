@@ -2,20 +2,5 @@
     ViewData["Title"] = "Home";
 }
 
-@using(Html.BeginForm("Upload", "File", FormMethod.Post, new{@class = "csv-form novalidate"}))
-{
-    <div class="form-validation">
-        <div class="d-flex flex-column flex-lg-row justify-content-lg-between">
-          <div>
-            <label class="btn btn-outline-primary" for="csvFileInput">
-                <i class="fas fa-cloud-upload-alt" ></i>
-                Upload a new CSV file
-            </label> 
-            <span class="csv-form-file-name"></span>
-          </div>
-            <span class="alert alert-danger hidden csv-form-error-msg"></span>
-            <div class="alert alert-primary csv-form-uploaded-msg hidden">Your csv file is being verified...</div>
-        </div>
-            <input type="file" accept=".csv" class="form-control csv-form-file-input" id="csvFileInput" name="csvfile" hidden />
-    </div>
-}
+
+<partial name="_UploadForm" />

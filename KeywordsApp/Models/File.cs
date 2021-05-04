@@ -8,7 +8,7 @@ namespace KeywordsApp.Models
 
     [Table("Users")]
     [Index(nameof(CreatedDate), nameof(Name))]
-    public class File
+    public class CsvFile
     {
         public int Id { get; set; }
 

@@ -34,9 +34,29 @@ $(function () {
       } else {
         uploadedMsgElt.show(250);
         // Submit form
-        form.submit();
+        submitForm(form);
       }
       fileNameElt.html(file.name);
     }
   });
+
+  const submitForm = (form) => {
+    var data = new FormData(form[0]);
+    $.ajax({
+      type: 'POST',
+      enctype: 'multipart/form-data',
+      url: form.attr('action'),
+      data: data,
+      processData: false,
+      contentType: false,
+      cache: false,
+      timeout: 600000,
+      success: function (data) {
+        console.log('SUCCESS : ', data);
+      },
+      error: function (e) {
+        console.log('ERROR : ', e);
+      },
+    });
+  };
 });
