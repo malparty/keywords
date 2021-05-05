@@ -1,24 +1,17 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using KeywordsApp.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using Microsoft.Extensions.Logging;
-using KeywordsApp.Models;
-using KeywordsApp.Areas.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using KeywordsApp.Areas.Identity.Services;
-using KeywordsApp.Models.File;
 
 namespace KeywordsApp
 {
     public class Startup
     {
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,25 +23,6 @@ namespace KeywordsApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
-            services.AddIdentity<UserEntity, IdentityRole>(options =>
-             {
-                 options.Password.RequireDigit = true;
-                 options.Password.RequireUppercase = true;
-             })
-            .AddEntityFrameworkStores<KeywordContext>()
-            .AddDefaultTokenProviders()
-            .AddDefaultUI();
-
-            services.AddTransient<IEmailSender, EmailSender>();
-            services.Configure<AuthMessageSenderOptions>(Configuration);
-            services.Configure<UploadFormOptions>(Configuration);
-
-
-            services.AddRazorPages();
-
-            services.AddScoped<IUserClaimsPrincipalFactory<UserEntity>, UserClaimsPrincipalFactory>();
-
             services.AddDbContext<KeywordContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("KeywordConnection"))
             );
@@ -77,17 +51,14 @@ namespace KeywordsApp
 
             app.UseRouting();
 
-            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=File}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-
         }
 
         private static void CreateDbIfNotExists(IApplicationBuilder host)
