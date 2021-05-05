@@ -5,6 +5,7 @@
     ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
 }
 
+
 <partial name="_StatusMessage" for="StatusMessage" />
 <h4>@ViewData["Title"]</h4>
 <div>
@@ -50,7 +51,13 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <script type="text/javascript" src="~/lib/qrcode.js"></script>
+    <environment include="Development">
+            <script src="~/lib/qrcode.js"></script>
+    </environment>
+    <environment exclude="Development">
+            <script src="~/lib/qrcode.min.js"></script>
+    </environment>
+
     <script type="text/javascript">
         new QRCode(document.getElementById("qrCode"),
             {
