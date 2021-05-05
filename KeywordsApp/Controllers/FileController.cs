@@ -46,7 +46,8 @@ namespace keywords.Controllers
                     KeywordsCount = x.Keywords.Count()
                 })
                 .OrderByDescending(x => x.CreatedDate)
-                .Take(10);
+                .Take(4)
+                .ToList();
             return View(model);
         }
 
