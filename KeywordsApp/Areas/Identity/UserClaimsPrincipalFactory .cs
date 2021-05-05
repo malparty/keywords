@@ -6,10 +6,10 @@ using Microsoft.Extensions.Options;
 
 namespace KeywordsApp.Areas.Identity
 {
-    public class UserClaimsPrincipalFactory : UserClaimsPrincipalFactory<User, IdentityRole>
+    public class UserClaimsPrincipalFactory : UserClaimsPrincipalFactory<UserEntity, IdentityRole>
     {
         public UserClaimsPrincipalFactory(
-            UserManager<User> userManager,
+            UserManager<UserEntity> userManager,
             RoleManager<IdentityRole> roleManager,
             IOptions<IdentityOptions> optionsAccessor)
             : base(userManager, roleManager, optionsAccessor)
@@ -17,7 +17,7 @@ namespace KeywordsApp.Areas.Identity
         }
 
         // Add Names properties to the Razore User object
-        protected override async Task<ClaimsIdentity> GenerateClaimsAsync(User user)
+        protected override async Task<ClaimsIdentity> GenerateClaimsAsync(UserEntity user)
         {
             var identity = await base.GenerateClaimsAsync(user);
             identity.AddClaim(new Claim("LastName", user.LastName ?? ""));
