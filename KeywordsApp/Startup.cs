@@ -87,6 +87,7 @@ namespace KeywordsApp
                     pattern: "{controller=File}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
         }
 
         private static void CreateDbIfNotExists(IApplicationBuilder host)
