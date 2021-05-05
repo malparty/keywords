@@ -9,7 +9,6 @@ using KeywordsApp.Models;
 using KeywordsApp.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using System.IO;
 using KeywordsApp.Models.File;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -32,7 +31,23 @@ namespace keywords.Controllers
 
         public IActionResult Index()
         {
-            return View();
+
+            var userId = _dbContext.GetUserId(User.Identity.Name);
+
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var model = _dbContext.Files.Where(x => x.CreatedByUserId == userId)
+                .Select(x => new FileViewModel
+                {
+                    FileId = x.Id,
+                    Name = x.Name,
+                    CreatedDate = x.CreatedDate,
+                    KeywordsCount = x.Keywords.Count()
+                })
+                .OrderByDescending(x => x.CreatedDate)
+                .Take(10);
+            return View(model);
         }
 
         [HttpPost]
@@ -47,9 +62,7 @@ namespace keywords.Controllers
             if (uploadFormViewModel.HasError)
                 return PartialView("_UploadForm", uploadFormViewModel);
 
-            var userId = _dbContext.Users.Where(x => x.Email == User.Identity.Name)
-                .Select(x => x.Id)
-                .FirstOrDefault();
+            var userId = _dbContext.GetUserId(User.Identity.Name);
 
             if (string.IsNullOrEmpty(userId))
                 return NotFound();
@@ -73,11 +86,6 @@ namespace keywords.Controllers
             }
 
             return PartialView("_UploadForm", uploadFormViewModel);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
