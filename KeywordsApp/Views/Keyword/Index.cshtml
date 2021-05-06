@@ -1,0 +1,33 @@
+﻿@model KeywordViewModel
+@{
+    ViewData["Title"] = "List";
+}
+@if(Model.FileId > 0){
+    <section id="keywordsListIntro" data-load-ajax="/File/HeaderIntro?fileId=@Model.FileId">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </section>
+}
+<section id="keywordsList">
+    <div class="mb-4">
+        @if(Model.Keywords.Count() == 0){
+            <div class="alert alert-info">You do not have any keyword yet. 
+                To start, <a href="/File/Index" title="Upload a CSV File first"> upload a CSV file here</a>.</div>
+        }
+        else {
+            @foreach (var group in Model.GroupedByOrderKey)
+            {
+                <h1 class="display-4">
+                <small class="text-muted">@group.Key</small>
+                </h1>
+                @await Html.PartialAsync("_KeywordsList", group)
+            }
+        }
+    </div>
+    @if(Model.Keywords.PageCount > 1){
+        <nav class="mt-2 mb-2">
+            @Html.PagedListPager(Model.Keywords, page => Url.Action("Index", new { page, Model.OrderBy }),Model.PagedListRenderOptions)
+        </nav>
+    }
+</section>

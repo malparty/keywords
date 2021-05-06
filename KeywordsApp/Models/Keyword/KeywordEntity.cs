@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using KeywordsApp.Models.File;
 
@@ -15,6 +16,8 @@ namespace KeywordsApp.Models.Keyword
 
         [Column(TypeName = "character varying(200)")]
         public string Name { get; set; }
+        public DateTime? ParsedDate { get; set; }
+        public ParsingStatus ParsingStatus { get; set; }
 
         public int FileId { get; set; }
         public FileEntity File { get; set; }

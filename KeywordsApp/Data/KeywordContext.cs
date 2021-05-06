@@ -1,3 +1,4 @@
+using System.Linq;
 using KeywordsApp.Models;
 using KeywordsApp.Models.File;
 using KeywordsApp.Models.Keyword;
@@ -24,6 +25,13 @@ namespace KeywordsApp.Data
             modelBuilder.Entity<UserEntity>().ToTable("Users");
 
             modelBuilder.Entity<KeywordEntity>().HasIndex(i => i.Name, "NameIndex");
+        }
+
+        public string GetUserId(string username)
+        {
+            return Users.Where(x => x.Email == username)
+                .Select(x => x.Id)
+                .FirstOrDefault();
         }
     }
 }

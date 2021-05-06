@@ -9,7 +9,6 @@ using KeywordsApp.Models;
 using KeywordsApp.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using System.IO;
 using KeywordsApp.Models.File;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -32,7 +31,39 @@ namespace keywords.Controllers
 
         public IActionResult Index()
         {
-            return View();
+
+            var userId = _dbContext.GetUserId(User.Identity.Name);
+
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var model = _dbContext.Files.Where(x => x.CreatedByUserId == userId)
+                .Select(x => new FileViewModel
+                {
+                    FileId = x.Id,
+                    Name = x.Name,
+                    CreatedDate = x.CreatedDate,
+                    KeywordsCount = x.Keywords.Count()
+                })
+                .OrderByDescending(x => x.CreatedDate)
+                .Take(4)
+                .ToList();
+            return View(model);
+        }
+
+        public IActionResult HeaderIntro(int fileId = 0)
+        {
+            var userId = _dbContext.GetUserId(User.Identity.Name);
+
+            if (fileId <= 0 || string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var model = _dbContext.Files.FirstOrDefault(x => x.CreatedByUserId == userId && x.Id == fileId);
+
+            if (model == null)
+                return NotFound();
+
+            return PartialView("_HeaderIntro", model);
         }
 
         [HttpPost]
@@ -44,17 +75,15 @@ namespace keywords.Controllers
         {
             var uploadFormViewModel = new UploadFormViewModel(csvFile, _config);
 
-            if (uploadFormViewModel.HasError)
+            if (!uploadFormViewModel.IsValid)
                 return PartialView("_UploadForm", uploadFormViewModel);
 
-            var userId = _dbContext.Users.Where(x => x.Email == User.Identity.Name)
-                .Select(x => x.Id)
-                .FirstOrDefault();
+            var userId = _dbContext.GetUserId(User.Identity.Name);
 
             if (string.IsNullOrEmpty(userId))
                 return NotFound();
 
-            var fileEntity = new FileEntity(userId, uploadFormViewModel.Keywords);
+            var fileEntity = new FileEntity(userId, uploadFormViewModel.Keywords, uploadFormViewModel.FileName);
             _dbContext.Files.Add(fileEntity);
             try
             {
@@ -73,11 +102,6 @@ namespace keywords.Controllers
             }
 
             return PartialView("_UploadForm", uploadFormViewModel);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
