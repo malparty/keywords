@@ -2,7 +2,7 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl('/parser').build();
 
-connection.on('ReceiveMessage', function (user, message) {
+connection.on('ReceiveStatusUpdate', function (user, message) {
   var msg = message
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

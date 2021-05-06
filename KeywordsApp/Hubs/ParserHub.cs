@@ -5,9 +5,9 @@ namespace KeywordsApp.Hubs
 {
     public class ParserHub : Hub
     {
-        public async Task SendStatusUpdate(int keywordId, string message)
+        public async Task SendStatusUpdate(string username, int keywordId, string status)
         {
-            await Clients.All.SendAsync("ReceiveStatusUpdate", keywordId, message);
+            await Clients.User(username).SendAsync("ReceiveStatusUpdate", keywordId, status);
         }
     }
 }
