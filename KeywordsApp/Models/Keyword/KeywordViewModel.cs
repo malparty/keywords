@@ -9,6 +9,7 @@ namespace KeywordsApp.Models.Keyword
     public class KeywordViewModel
     {
         public KeywordOrderBy OrderBy { get; set; }
+        public int FileId { get; set; }
         public IPagedList<KeywordEntity> Keywords { get; set; }
         public PagedListRenderOptionsBase PagedListRenderOptions
         {
@@ -35,6 +36,7 @@ namespace KeywordsApp.Models.Keyword
                     return Keywords.GroupBy(x => x.Name.ToLower()[0].ToString());
             }
         }
+
     }
     public enum KeywordOrderBy
     {

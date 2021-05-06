@@ -1,6 +1,32 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/js/components/loader-ajax.js":
+/*!******************************************!*\
+  !*** ./src/js/components/loader-ajax.js ***!
+  \******************************************/
+/***/ (() => {
+
+class SectionDataLoader {
+  initLoader = () => {
+    $('section[data-load-ajax]').map((index, elt) => {
+      var element = $(elt);
+      element.load(element.data('load-ajax'), (rsp, status) => {
+        if (status == 'error') {
+          element.html('<b>Error:</b> Could not load component');
+          element.addClass('text-danger');
+        }
+      });
+    });
+  };
+}
+$(function () {
+  new SectionDataLoader().initLoader();
+});
+
+
+/***/ }),
+
 /***/ "./src/js/screens/uploadForm.js":
 /*!**************************************!*\
   !*** ./src/js/screens/uploadForm.js ***!
@@ -155,8 +181,11 @@ var __webpack_exports__ = {};
   !*** ./src/js/site.js ***!
   \************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../js/screens/uploadForm.js */ "./src/js/screens/uploadForm.js");
-/* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../js/components/loader-ajax.js */ "./src/js/components/loader-ajax.js");
+/* harmony import */ var _js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../js/screens/uploadForm.js */ "./src/js/screens/uploadForm.js");
+/* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_1__);
+
 
 
 })();

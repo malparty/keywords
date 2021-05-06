@@ -51,6 +51,21 @@ namespace keywords.Controllers
             return View(model);
         }
 
+        public IActionResult HeaderIntro(int fileId = 0)
+        {
+            var userId = _dbContext.GetUserId(User.Identity.Name);
+
+            if (fileId <= 0 || string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var model = _dbContext.Files.FirstOrDefault(x => x.CreatedByUserId == userId && x.Id == fileId);
+
+            if (model == null)
+                return NotFound();
+
+            return PartialView("_HeaderIntro", model);
+        }
+
         [HttpPost]
         [Route("File/Upload")]
         [ValidateAntiForgeryToken]
