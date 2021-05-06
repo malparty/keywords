@@ -15,6 +15,7 @@ using KeywordsApp.Areas.Identity;
 using KeywordsApp.Areas.Identity.Services;
 using KeywordsApp.Models.File;
 using KeywordsApp.Hubs;
+using KeywordsApp.HostedServices;
 
 namespace KeywordsApp
 {
@@ -49,6 +50,7 @@ namespace KeywordsApp
 
             services.AddRazorPages();
             services.AddSignalR();
+            services.AddHostedService<ParserService>();
 
             services.AddScoped<IUserClaimsPrincipalFactory<UserEntity>, UserClaimsPrincipalFactory>();
 

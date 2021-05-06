@@ -2,12 +2,15 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl('/parser').build();
 
-connection.on('ReceiveStatusUpdate', function (user, message) {
+connection.on('KeywordStatusUpdate', function (user, message) {
+  console.log('YEAAAAH!!!');
+  console.log(user);
+  console.log(message);
   var msg = message
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
-  var encodedMsg = user + ' says ' + msg;
+  var encodedMsg = user + ' KeywordStatusUpdate ' + msg;
   alert(encodedMsg);
 });
 
@@ -21,14 +24,3 @@ connection
   .catch(function (err) {
     return console.error(err.toString());
   });
-
-// document
-//   .getElementById('sendButton')
-//   .addEventListener('click', function (event) {
-//     var user = document.getElementById('userInput').value;
-//     var message = document.getElementById('messageInput').value;
-//     connection.invoke('SendMessage', user, message).catch(function (err) {
-//       return console.error(err.toString());
-//     });
-//     event.preventDefault();
-//   });
