@@ -1,8 +1,12 @@
 @model IEnumerable<KeywordsApp.Models.Keyword.KeywordEntity>
-    
-@foreach (var keyword in Model)
-{
-    <div class="keyword">
-        @keyword.Name
+
+<div class="container">
+    <div class="row">
+        @foreach (var keyword in Model)
+        {
+            <div class="keyword col-lg-2 col-md-3 col-sm-4">
+                @keyword.Name
+            </div>
+        }
     </div>
-}
+</div>

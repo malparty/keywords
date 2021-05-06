@@ -1,26 +1,26 @@
-﻿@model KeywordsApp.Models.Keyword.KeywordViewModel
+﻿@model KeywordViewModel
 @{
     ViewData["Title"] = "Home";
-    char previousChar = '_';
 }
 
 <section id="keywordsList">
     <h2>Keywords:</h2>
-    @if(Model.Keywords.Count() == 0){
-        <div class="alert alert-info">You do not have any keyword yet. 
-            To start, <a href="/File/Index" title="Upload a CSV File first"> upload a CSV file here</a>.</div>
-    }
-    else if (Model.OrderBy == KeywordsApp.Models.Keyword.KeywordOrderBy.Status){
-        @await Html.PartialAsync("_KeywordsList", Model.Keywords)
-    }
-    else{
-        
-        @foreach (var letter in Model.Keywords.GroupBy(x => x.Name[0]))
-        {
-            <h1>@letter.Key</h1>
-            @await Html.PartialAsync("_KeywordsList", letter)
+    <div class="mb-4">
+        @if(Model.Keywords.Count() == 0){
+            <div class="alert alert-info">You do not have any keyword yet. 
+                To start, <a href="/File/Index" title="Upload a CSV File first"> upload a CSV file here</a>.</div>
         }
-    }
-    
-    @Html.PagedListPager(Model.Keywords, page => Url.Action("Index", new { page, Model.OrderBy }))
+        else {
+            @foreach (var group in Model.GroupedByOrderKey)
+            {
+                <h1 class="display-4">
+                <small class="text-muted">@group.Key</small>
+                </h1>
+                @await Html.PartialAsync("_KeywordsList", group)
+            }
+        }
+    </div>
+    <nav class="mt-2 mb-2">
+        @Html.PagedListPager(Model.Keywords, page => Url.Action("Index", new { page, Model.OrderBy }),Model.PagedListRenderOptions)
+    </nav>
 </section>
