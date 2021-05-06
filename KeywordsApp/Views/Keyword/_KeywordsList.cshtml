@@ -1,0 +1,8 @@
+@model IEnumerable<KeywordsApp.Models.Keyword.KeywordEntity>
+    
+@foreach (var keyword in Model)
+{
+    <div class="keyword">
+        @keyword.Name
+    </div>
+}
