@@ -75,7 +75,7 @@ namespace keywords.Controllers
         {
             var uploadFormViewModel = new UploadFormViewModel(csvFile, _config);
 
-            if (uploadFormViewModel.HasError)
+            if (!uploadFormViewModel.IsValid)
                 return PartialView("_UploadForm", uploadFormViewModel);
 
             var userId = _dbContext.GetUserId(User.Identity.Name);
@@ -83,7 +83,7 @@ namespace keywords.Controllers
             if (string.IsNullOrEmpty(userId))
                 return NotFound();
 
-            var fileEntity = new FileEntity(userId, uploadFormViewModel.Keywords);
+            var fileEntity = new FileEntity(userId, uploadFormViewModel.Keywords, uploadFormViewModel.FileName);
             _dbContext.Files.Add(fileEntity);
             try
             {

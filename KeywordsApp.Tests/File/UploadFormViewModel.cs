@@ -32,7 +32,7 @@ namespace KeywordsApp.Tests.File
             {
                 var uploadForm = new UploadFormViewModel(null, UploadFormViewModel_Tests.CONFIG);
 
-                Assert.True(uploadForm.HasError);
+                Assert.False(uploadForm.IsValid);
             }
 
             [Fact]
@@ -45,7 +45,7 @@ namespace KeywordsApp.Tests.File
 
                 var uploadForm = new UploadFormViewModel(stubFormFile, UploadFormViewModel_Tests.CONFIG);
 
-                Assert.True(uploadForm.HasError);
+                Assert.False(uploadForm.IsValid);
             }
 
             [Fact]
@@ -58,7 +58,7 @@ namespace KeywordsApp.Tests.File
 
                 var uploadForm = new UploadFormViewModel(stubFormFile, UploadFormViewModel_Tests.CONFIG);
 
-                Assert.True(uploadForm.HasError);
+                Assert.False(uploadForm.IsValid);
             }
 
 
@@ -72,7 +72,7 @@ namespace KeywordsApp.Tests.File
 
                 var uploadForm = new UploadFormViewModel(stubFormFile, UploadFormViewModel_Tests.CONFIG);
 
-                Assert.True(uploadForm.HasError);
+                Assert.False(uploadForm.IsValid);
             }
 
 
@@ -83,7 +83,7 @@ namespace KeywordsApp.Tests.File
 
                 var uploadForm = new UploadFormViewModel(stubFormFile, UploadFormViewModel_Tests.CONFIG);
 
-                Assert.False(uploadForm.HasError);
+                Assert.True(uploadForm.IsValid);
             }
         }
 
@@ -95,7 +95,7 @@ namespace KeywordsApp.Tests.File
                 var formFile = new StubFormFile("");
                 var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
 
-                Assert.True(uploadForm.HasError);
+                Assert.False(uploadForm.IsValid);
             }
 
             [Theory]
@@ -111,7 +111,7 @@ namespace KeywordsApp.Tests.File
                 var formFile = new StubFormFile(value);
                 var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
 
-                Assert.True(uploadForm.HasError);
+                Assert.False(uploadForm.IsValid);
             }
 
 
@@ -126,16 +126,28 @@ namespace KeywordsApp.Tests.File
                 var formFile = new StubFormFile(keywords);
                 var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
 
-                Assert.True(uploadForm.HasError);
+                Assert.False(uploadForm.IsValid);
+            }
+
+
+            [Fact]
+            public void ParseMethod4_BadCsvFileNaming_GetError()
+            {
+                var formFile = new StubFormFile();
+                // Overwrite a bad file name:
+                formFile.FileName = "<>.csv";
+                var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
+
+                Assert.False(uploadForm.IsValid);
             }
 
             [Fact]
-            public void ParseMethod4_NormalCsv_GetNoError()
+            public void ParseMethod5_NormalCsv_GetNoError()
             {
                 var formFile = new StubFormFile("helloWorld");
                 var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
 
-                Assert.False(uploadForm.HasError);
+                Assert.True(uploadForm.IsValid);
             }
         }
     }
@@ -145,6 +157,7 @@ namespace KeywordsApp.Tests.File
         public StubFormFile(string csvContent = "Hello,World,")
         {
             _fakeStream = new MemoryStream(Encoding.UTF8.GetBytes(csvContent));
+            FileName = "normal.csv";
             Length = 1;
         }
         private Stream _fakeStream;
@@ -158,7 +171,7 @@ namespace KeywordsApp.Tests.File
 
         public string Name => throw new NotImplementedException();
 
-        public string FileName => throw new NotImplementedException();
+        public string FileName { get; set; }
 
         public void CopyTo(Stream target)
         {

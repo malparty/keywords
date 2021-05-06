@@ -12,17 +12,25 @@ namespace KeywordsApp.Models.File
 {
     public class UploadFormViewModel
     {
+        const int NAME_MAX_LENGTH = 256;
         private int _maxCsvFileSizeUpload;
         public List<string> Keywords { get; set; }
+        public string FileName { get; internal set; }
         public string ErrorMsg { get; set; }
         public string SuccessMsg { get; set; }
-        public bool HasError { get { return !string.IsNullOrEmpty(ErrorMsg); } }
+        public bool IsValid { get { return string.IsNullOrEmpty(ErrorMsg); } }
 
         public UploadFormViewModel(IFormFile csvFile, IConfiguration config)
         {
             initConfig(config);
-            if (validate(csvFile))
-                parse(csvFile);
+
+            if (!validate(csvFile))
+                return;
+
+            if (!parseUntrustedFileName(csvFile.FileName))
+                return;
+
+            parse(csvFile);
         }
         private void initConfig(IConfiguration config)
         {
@@ -37,7 +45,7 @@ namespace KeywordsApp.Models.File
                 ErrorMsg = "The file cannot be empty.";
             else if (csvFile.Length > _maxCsvFileSizeUpload)
                 ErrorMsg = "The file must be under 10Kb.";
-            return string.IsNullOrEmpty(ErrorMsg);
+            return IsValid;
         }
 
         private void parse(IFormFile csvFile)
@@ -65,6 +73,22 @@ namespace KeywordsApp.Models.File
             if (Keywords.Any(kw => !keywordRegex.IsMatch(kw)))
                 ErrorMsg = "Keywords with specical chars (<>=:.{}[]...) are not allowed.";
 
+        }
+        private bool parseUntrustedFileName(string untrustedFileName)
+        {
+            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+            FileName = System.Text.RegularExpressions.Regex.Replace(untrustedFileName, invalidRegStr, " ");
+            FileName = FileName.Replace(".csv", "");
+
+            if (FileName.Length > NAME_MAX_LENGTH)
+                FileName = FileName.Substring(0, NAME_MAX_LENGTH);
+
+            if (string.IsNullOrWhiteSpace(FileName))
+                ErrorMsg = "Your file name is not valid.";
+
+            return IsValid;
         }
 
     }
