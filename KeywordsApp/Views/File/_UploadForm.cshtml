@@ -18,12 +18,3 @@
             <input type="file" id="csvFileInput" name="csvFile" accept=".csv" class="form-control csv-form-file-input hidden" />
     </div>
 </form>
-
-<ul>
-    @if(Model != null && Model.Keywords != null){
-    foreach (var keyWord in Model.Keywords)
-    {
-        <li>@keyWord</li>
-    }
-    }
-</ul>
