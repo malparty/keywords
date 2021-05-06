@@ -130,19 +130,48 @@ namespace KeywordsApp.Tests.File
             }
 
 
-            [Fact]
-            public void ParseMethod4_BadCsvFileNaming_GetError()
+            [Theory]
+            [InlineData(" .csv")]
+            [InlineData("[")]
+            [InlineData("<")]
+            [InlineData("<<.csv")]
+            [InlineData(" |.csv")]
+            public void ParseMethod4_BadCsvFileNaming_GetError(string fileName)
             {
                 var formFile = new StubFormFile();
                 // Overwrite a bad file name:
-                formFile.FileName = " .csv";
+                formFile.FileName = fileName;
                 var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
 
                 Assert.False(uploadForm.IsValid);
             }
+            [Fact]
+            public void ParseMethod5_CsvFileSpecialCharNaming_GetNoError()
+            {
+
+                var formFile = new StubFormFile();
+                // Overwrite a bad file name:
+                formFile.FileName = "file{name}.csv";
+                var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
+
+                Assert.True(uploadForm.IsValid);
+            }
+
 
             [Fact]
-            public void ParseMethod5_NormalCsv_GetNoError()
+            public void ParseMethod6_CsvFileSpecialCharNaming_GetNoSpecialChar()
+            {
+
+                var formFile = new StubFormFile();
+                // Overwrite a bad file name:
+                formFile.FileName = "file{name}.csv";
+                var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
+
+                Assert.False(uploadForm.FileName.Contains('{'));
+            }
+
+            [Fact]
+            public void ParseMethod7_NormalCsv_GetNoError()
             {
                 var formFile = new StubFormFile("helloWorld");
                 var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);

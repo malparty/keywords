@@ -76,12 +76,11 @@ namespace KeywordsApp.Models.File
         }
         private bool parseUntrustedFileName(string untrustedFileName)
         {
-            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
-            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", @"<>:\\\{\}\|\?\*\[\]\+");
 
             FileName = System.Text.RegularExpressions.Regex.Replace(untrustedFileName, invalidRegStr, " ");
-            FileName = FileName.Replace(".csv", "");
 
+            FileName = FileName.Replace(".csv", "");
             if (FileName.Length > NAME_MAX_LENGTH)
                 FileName = FileName.Substring(0, NAME_MAX_LENGTH);
 
