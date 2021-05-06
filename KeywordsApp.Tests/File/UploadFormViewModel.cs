@@ -135,7 +135,7 @@ namespace KeywordsApp.Tests.File
             {
                 var formFile = new StubFormFile();
                 // Overwrite a bad file name:
-                formFile.FileName = "<>.csv";
+                formFile.FileName = " .csv";
                 var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
 
                 Assert.False(uploadForm.IsValid);
