@@ -7,6 +7,9 @@
   \******************************************/
 /***/ (() => {
 
+/// SectionDataLoader
+/// Enable to load section content from ajax query
+/// <section data-load-ajax="#URL">#LOADING MSG</section>
 class SectionDataLoader {
   initLoader = () => {
     $('section[data-load-ajax]').map((index, elt) => {
