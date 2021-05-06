@@ -30,6 +30,51 @@ $(function () {
 
 /***/ }),
 
+/***/ "./src/js/components/parser-updates.js":
+/*!*********************************************!*\
+  !*** ./src/js/components/parser-updates.js ***!
+  \*********************************************/
+/***/ (() => {
+
+"use strict";
+
+
+var connection = new signalR.HubConnectionBuilder().withUrl('/parser').build();
+
+connection.on('ReceiveMessage', function (user, message) {
+  var msg = message
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  var encodedMsg = user + ' says ' + msg;
+  alert(encodedMsg);
+});
+
+connection
+  .start()
+  .then(function () {
+    $('#signalRBadge').removeClass('badge-light');
+    $('#signalRBadge').addClass('badge-success');
+    $('#signalRBadge').attr('title', 'SignalR connected');
+  })
+  .catch(function (err) {
+    return console.error(err.toString());
+  });
+
+// document
+//   .getElementById('sendButton')
+//   .addEventListener('click', function (event) {
+//     var user = document.getElementById('userInput').value;
+//     var message = document.getElementById('messageInput').value;
+//     connection.invoke('SendMessage', user, message).catch(function (err) {
+//       return console.error(err.toString());
+//     });
+//     event.preventDefault();
+//   });
+
+
+/***/ }),
+
 /***/ "./src/js/screens/uploadForm.js":
 /*!**************************************!*\
   !*** ./src/js/screens/uploadForm.js ***!
@@ -184,10 +229,13 @@ var __webpack_exports__ = {};
   !*** ./src/js/site.js ***!
   \************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../js/components/loader-ajax.js */ "./src/js/components/loader-ajax.js");
-/* harmony import */ var _js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../js/screens/uploadForm.js */ "./src/js/screens/uploadForm.js");
-/* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _js_components_parser_updates_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../js/components/parser-updates.js */ "./src/js/components/parser-updates.js");
+/* harmony import */ var _js_components_parser_updates_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_js_components_parser_updates_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../js/components/loader-ajax.js */ "./src/js/components/loader-ajax.js");
+/* harmony import */ var _js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../js/screens/uploadForm.js */ "./src/js/screens/uploadForm.js");
+/* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_2__);
+
 
 
 
