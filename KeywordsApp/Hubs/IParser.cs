@@ -5,8 +5,7 @@ namespace KeywordsApp.Hubs
 {
     public interface IParser
     {
-        Task KeywordStatusUpdate(string username, int keywordId, string status);
-        Task SayHello();
+        Task KeywordStatusUpdate(int fileId, int keywordId, string keywordName, string status, string errorMsg);
     }
 
 }

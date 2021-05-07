@@ -51,6 +51,7 @@ namespace KeywordsApp
             services.AddRazorPages();
             services.AddSignalR();
             services.AddHostedService<ParserService>();
+            services.AddSingleton<IGoogleParser, GoogleParser>();
 
             services.AddScoped<IUserClaimsPrincipalFactory<UserEntity>, UserClaimsPrincipalFactory>();
 

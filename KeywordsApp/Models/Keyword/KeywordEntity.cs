@@ -19,6 +19,7 @@ namespace KeywordsApp.Models.Keyword
         public DateTime? ParsedDate { get; set; }
         public ParsingStatus ParsingStatus { get; set; }
 
+        #region Keyword Results
         public int AdWordsCount { get; set; }
         public int LinkCount { get; set; }
 
@@ -27,7 +28,7 @@ namespace KeywordsApp.Models.Keyword
 
         // Miliseconds
         public int RequestDuration { get; set; }
-
+        #endregion
         public int FileId { get; set; }
         public FileEntity File { get; set; }
     }

@@ -12,12 +12,12 @@ namespace KeywordsApp.HostedServices
     public class ParserService : BackgroundService
     {
         private readonly ILogger<ParserService> _logger;
-        private readonly IHubContext<ParserHub, IParser> _parserHub;
+        private readonly IGoogleParser _googleParser;
 
-        public ParserService(ILogger<ParserService> logger, IHubContext<ParserHub, IParser> parserHub)
+        public ParserService(ILogger<ParserService> logger, IGoogleParser googleParser)
         {
             _logger = logger;
-            _parserHub = parserHub;
+            _googleParser = googleParser;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -25,12 +25,15 @@ namespace KeywordsApp.HostedServices
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {Time}", DateTime.Now);
-                // WORKING
-                // WORKING
-                // WORKING
-                // WORKING
-                await _parserHub.Clients.All.KeywordStatusUpdate("xavier@malparty.fr", 1, "Coucou toi l'amis!"); // TODO MAP!
+                await _googleParser.ParseAsync(true); // TODO - Define when taking failed and when not!
+                // No action until current parsing is done
+                while (_googleParser.IsParsing)
+                {
+                    await Task.Delay(1000);
+                }
+                // Wait 5 seconds until next parsing check
                 await Task.Delay(5000);
+
             }
         }
     }
