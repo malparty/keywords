@@ -4,7 +4,6 @@ namespace KeywordsApp.Models.Keyword
     {
         Failed = 0,
         Pending = 1,
-        Parsing = 2,
-        Succeed = 3,
+        Succeed = 2,
     }
 }

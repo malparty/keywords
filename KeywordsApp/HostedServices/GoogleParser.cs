@@ -46,8 +46,6 @@ namespace KeywordsApp.HostedServices
                     await SendNotification(keyword, errorMsg);
                 }
 
-                // Update Keyword in DB.
-                // TODO
             }
             catch (Exception e)
             {
@@ -58,11 +56,6 @@ namespace KeywordsApp.HostedServices
             {
                 IsParsing = false;
             }
-
-
-
-            // Persist current data changes
-
         }
         private async Task MarkKeywordAsFailedAsync(int keywordId)
         {
@@ -98,6 +91,11 @@ namespace KeywordsApp.HostedServices
                     return parsingResults.ErrorMsg;
                 }
                 // Update KeywordEntity in DB
+                var isPersistSucceed = await PersistParsedKeyword(keyword.KeywordId, parsingResults);
+                if (!isPersistSucceed)
+                {
+                    return "Could not store changes in Db while parsing Keyword.";
+                }
             }
             catch (Exception e)
             {
@@ -105,7 +103,6 @@ namespace KeywordsApp.HostedServices
                 // Mark current Keyword FAILED
                 await MarkKeywordAsFailedAsync(keyword.KeywordId);
             }
-
             return null;
         }
 
@@ -216,6 +213,32 @@ namespace KeywordsApp.HostedServices
                 }).ToList();
             }
             return pendingKeywords;
+        }
+
+        private async Task<bool> PersistParsedKeyword(int keywordId, KeywordResultParserModel parsedModel)
+        {
+            try
+            {
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<KeywordContext>();
+                    var keyword = await dbContext.Keywords.FindAsync(keywordId);
+                    keyword.HtmlCode = parsedModel.HtmlCode;
+                    keyword.AdWordsCount = parsedModel.AdWordsCount;
+                    keyword.LinkCount = parsedModel.LinkCount;
+                    keyword.RequestDuration = parsedModel.RequestDuration;
+                    keyword.TotalThouthandResultsCount = parsedModel.TotalThouthandResultsCount;
+                    keyword.ParsingStatus = ParsingStatus.Succeed;
+                    keyword.ParsedDate = DateTime.Now;
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(0, string.Format("Error while persisting keyword {0}", keywordId), e);
+                return false;
+            }
+            return true;
         }
 
     }

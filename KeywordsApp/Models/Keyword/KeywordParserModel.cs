@@ -15,20 +15,21 @@ namespace KeywordsApp.Models.Keyword
         public HtmlNode BodyNode { get; set; }
 
         private HtmlDocument _pageDocument;
+        private KeywordResultParserModel _keywordResult;
 
 
         public KeywordResultParserModel ParseHtml()
         {
-            var result = new KeywordResultParserModel();
+            _keywordResult = new KeywordResultParserModel();
             if (!LoadHtmlContent())
             {
-                result.ErrorMsg = "Could not parse keyword. Search did not respond with a standard google result.";
-                return result;
+                _keywordResult.ErrorMsg = "Could not parse keyword. Search did not respond with a standard google result.";
+                return _keywordResult;
             }
 
-            ParseRequestStats(result);
+            ParseRequestStats();
 
-            return result;
+            return _keywordResult;
 
         }
         private bool LoadHtmlContent()
@@ -37,9 +38,14 @@ namespace KeywordsApp.Models.Keyword
             _pageDocument.LoadHtml(RawHtmlContent);
             // Test if it is a google search page result based on "GSR" id presence:
             BodyNode = _pageDocument.DocumentNode.SelectSingleNode("//body[contains(@id,'gsr')][1]");
-            return !string.IsNullOrEmpty(BodyNode?.InnerHtml);
+            if (string.IsNullOrEmpty(BodyNode?.InnerHtml))
+            {
+                return false;
+            }
+            _keywordResult.HtmlCode = RawHtmlContent;
+            return true;
         }
-        private void ParseRequestStats(KeywordResultParserModel result)
+        private void ParseRequestStats()
         {
             // About 340,000,000 results (0.68 seconds) 
             // Khoảng 2.000.000.000 kết quả (0,78 giây) 
@@ -50,14 +56,14 @@ namespace KeywordsApp.Models.Keyword
             var requestStatsString = BodyNode.SelectSingleNode("//div[contains(@id,'result-stats')][1]")?.InnerHtml;
             if (string.IsNullOrEmpty(requestStatsString))
             {
-                result.ErrorMsg = "Cannot find request stats string";
+                _keywordResult.ErrorMsg = "Cannot find request stats string";
                 return;
             }
             // (0,78 giay)
             var durationParenthesis = Regex.Matches(requestStatsString, @"\(.*\)");
             if (durationParenthesis.Count == 0)
             {
-                result.ErrorMsg = string.Format("Cannot parse duration parenthesis from {0}", requestStatsString);
+                _keywordResult.ErrorMsg = string.Format("Cannot parse duration parenthesis from {0}", requestStatsString);
                 return;
             }
 
@@ -65,7 +71,7 @@ namespace KeywordsApp.Models.Keyword
             var durationSeconds = Regex.Matches(durationParenthesis[0].Value, @"\({1}[0-9]+");
             if (durationSeconds.Count == 0)
             {
-                result.ErrorMsg = string.Format("Cannot parse duration second from {0}", durationParenthesis[0].Value);
+                _keywordResult.ErrorMsg = string.Format("Cannot parse duration second from {0}", durationParenthesis[0].Value);
                 return;
             }
             int seconds = 0;
@@ -73,7 +79,7 @@ namespace KeywordsApp.Models.Keyword
             var secondstring = durationSeconds[0].Value.Replace("(", "");
             if (!int.TryParse(secondstring, out seconds))
             {
-                result.ErrorMsg = string.Format("Cannot parse secondString to int from {0}", secondstring);
+                _keywordResult.ErrorMsg = string.Format("Cannot parse secondString to int from {0}", secondstring);
                 return;
             }
 
@@ -81,7 +87,7 @@ namespace KeywordsApp.Models.Keyword
             var durationDecimals = Regex.Matches(durationParenthesis[0].Value, @"[0-9]+[ ]{1}");
             if (durationDecimals.Count == 0)
             {
-                result.ErrorMsg = string.Format("Cannot parse duration decimals from {0}", durationParenthesis[0].Value);
+                _keywordResult.ErrorMsg = string.Format("Cannot parse duration decimals from {0}", durationParenthesis[0].Value);
                 return;
             }
             int decimals = 0;
@@ -89,11 +95,11 @@ namespace KeywordsApp.Models.Keyword
             var decimalsString = durationDecimals[0].Value.Replace(" ", "");
             if (!int.TryParse(decimalsString, out decimals))
             {
-                result.ErrorMsg = string.Format("Cannot parse decimalsString to int from {0}", secondstring);
+                _keywordResult.ErrorMsg = string.Format("Cannot parse decimalsString to int from {0}", secondstring);
                 return;
             }
 
-            result.RequestDuration = seconds * 1000 + decimals * 10;
+            _keywordResult.RequestDuration = seconds * 1000 + decimals * 10;
         }
     }
 
