@@ -59,12 +59,19 @@ namespace KeywordsApp.Tests.Keyword
             [InlineData("About 1.780.000.000 results")]
             [InlineData("About 1 780 000 000 results")]
             [InlineData("About 1780000000 results")]
-            public void ParseMethod3_CanParseRequestResultCount_IsValid(string value)
+            public void ParseMethod5_CanParseRequestResultCount_IsValid(string value)
             {
                 var parser = new KeywordParserFake();
                 parser.RawHtmlContent = parser.RawHtmlContent.Replace("About 1,780,000,000 results", value);
                 var result = parser.ParseHtml();
                 Assert.True(result.IsValid);
+            }
+            [Fact]
+            public void ParseMethod6_CanParseRequestLinkCount_RightCount()
+            {
+                var parser = new KeywordParserFake();
+                var result = parser.ParseHtml();
+                Assert.Equal(result.LinkCount, parser.LinkCount);
             }
 
         }
@@ -72,6 +79,8 @@ namespace KeywordsApp.Tests.Keyword
 
     public class KeywordParserFake : KeywordParserModel
     {
+        // based HTML data set inside RawHtmlContent
+        public int LinkCount = 27;
         public KeywordParserFake()
         {
             KeywordId = 1;

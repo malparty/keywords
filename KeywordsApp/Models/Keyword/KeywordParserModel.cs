@@ -28,7 +28,14 @@ namespace KeywordsApp.Models.Keyword
             }
 
             ParseRequestStats();
+            if (!_keywordResult.IsValid)
+                return _keywordResult;
 
+            ParseRequestLinkCount();
+            if (!_keywordResult.IsValid)
+                return _keywordResult;
+
+            ParseRequestAdWordsCount();
             return _keywordResult;
 
         }
@@ -44,6 +51,15 @@ namespace KeywordsApp.Models.Keyword
             }
             _keywordResult.HtmlCode = RawHtmlContent;
             return true;
+        }
+        private void ParseRequestAdWordsCount()
+        {
+            // TODOD
+
+        }
+        private void ParseRequestLinkCount()
+        {
+            _keywordResult.LinkCount = BodyNode.SelectNodes("//a").Count;
         }
         private void ParseRequestStats()
         {
