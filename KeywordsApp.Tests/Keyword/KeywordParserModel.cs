@@ -74,6 +74,25 @@ namespace KeywordsApp.Tests.Keyword
                 Assert.Equal(result.LinkCount, parser.LinkCount);
             }
 
+            [Fact]
+            public void ParseMethod7_CanParseRequestAdwordsCount_NoAd()
+            {
+                var parser = new KeywordParserFake();
+                var result = parser.ParseHtml();
+                Assert.Equal(result.AdWordsCount, 0);
+            }
+            [Fact]
+            public void ParseMethod8_CanParseRequestLinkCount_ContainOneAd()
+            {
+                var parser = new KeywordParserFake();
+                // A page contains several links to the same offer
+                parser.RawHtmlContent += "<a data-offer-id=\"133009651\"></a>";
+                parser.RawHtmlContent += "<a data-offer-id=\"133009651\"></a>";
+                parser.RawHtmlContent += "<div data-text-ad=\"1\"></div>";
+                var result = parser.ParseHtml();
+                Assert.Equal(result.AdWordsCount, 2);
+            }
+
         }
     }
 
