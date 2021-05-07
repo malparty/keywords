@@ -14,44 +14,34 @@ namespace KeywordsApp.Tests.Keyword
         public class KeywordParserModel_ParseStatsMethod
         {
             [Fact]
-            public void ParseStatsMethod1_EmptyCsv_GetError()
+            public void ParseStatsMethod1_ParsingNormalPage_IsValid()
             {
                 var parser = new KeywordParserFake();
                 var result = parser.ParseHtml();
                 Assert.True(result.IsValid);
-                // TODO
-                // TODO
-                // TODO
-                // TODO
-                // TODO
-                // TODO
-                // TODO
-                // TODO
-                // TODO
-                // TODO
-                // TODO
-                // TODO
-                // TODO
-                // TODO
-                // TODO
-                // TODO
             }
 
-            // [Theory]
-            // [InlineData("key<>word")]
-            // [InlineData("key[]word")]
-            // [InlineData("key{}word")]
-            // [InlineData("key=word")]
-            // [InlineData("key;word")]
-            // [InlineData("key:word")]
-            // [InlineData(":")]
-            // public void ParseMethod2_SpecialCharKeyword_GetError(string value)
-            // {
-            //     var formFile = new StubFormFile(value);
-            //     var uploadForm = new UploadFormViewModel(formFile, UploadFormViewModel_Tests.CONFIG);
+            [Fact]
+            public void ParseStatsMethod2_CannotFindStatString_IsNotValid()
+            {
+                var parser = new KeywordParserFake();
+                parser.RawHtmlContent = parser.RawHtmlContent.Replace("result-stats", "another-id");
+                var result = parser.ParseHtml();
+                Assert.False(result.IsValid);
+            }
 
-            //     Assert.False(uploadForm.IsValid);
-            // }
+
+            [Theory]
+            [InlineData("(0.68 seconds")]
+            [InlineData("(A.68 seconds)")]
+            [InlineData("(0. seconds)")]
+            public void ParseMethod3_CannotParseRequestDuration_IsNotValid(string value)
+            {
+                var parser = new KeywordParserFake();
+                parser.RawHtmlContent = parser.RawHtmlContent.Replace("(0.68 seconds)", value);
+                var result = parser.ParseHtml();
+                Assert.False(result.IsValid);
+            }
 
         }
     }
