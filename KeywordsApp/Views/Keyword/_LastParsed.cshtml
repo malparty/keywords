@@ -1,0 +1,11 @@
+@model IEnumerable<KeywordViewModel>
+<h2>Last Keyword parsed:</h2>
+<div class="row">
+    @foreach (var keyword in Model)
+    {
+        <div class="col-lg-3 col-md-6">
+            @Html.Partial("_Details",keyword)
+        </div>
+    }
+</div>
+<a href="/Keyword/Index" class="btn btn-primary mt-2">All Keywords</a>

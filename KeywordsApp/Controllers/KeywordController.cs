@@ -62,7 +62,7 @@ namespace keywords.Controllers
                     .ThenByDescending(x => x.ParsedDate);
             }
 
-            var model = new KeywordViewModel
+            var model = new KeywordListViewModel
             {
                 OrderBy = orderBy,
                 Keywords = initQuery.ToPagedList(page ?? 1, NBR_KEYWORD_PER_PAGE),
@@ -70,6 +70,76 @@ namespace keywords.Controllers
             };
 
             return View(model);
+        }
+
+        public async Task<IActionResult> LastParsed()
+        {
+            var userId = _dbContext.GetUserId(User.Identity.Name);
+
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var model = await _dbContext.Keywords.Where(x => x.File.CreatedByUserId == userId && x.ParsingStatus == ParsingStatus.Succeed)
+            .OrderByDescending(x => x.ParsedDate)
+            .Take(8)
+            .Select(x => new KeywordViewModel
+            {
+                KeywordId = x.Id,
+                Name = x.Name,
+                FileName = x.File.Name,
+                AdWordsCount = x.AdWordsCount,
+                LinkCount = x.LinkCount,
+                RequestDuration = x.RequestDuration,
+                TotalThouthandResultsCount = x.TotalThouthandResultsCount,
+                FileId = x.FileId,
+                ParsedDate = x.ParsedDate,
+                ParsingStatus = x.ParsingStatus
+            })
+            .ToListAsync();
+            return PartialView("_LastParsed", model);
+        }
+
+        public IActionResult Details(int keywordId)
+        {
+            var userId = _dbContext.GetUserId(User.Identity.Name);
+
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var model = _dbContext.Keywords.Where(x => x.File.CreatedByUserId == userId && x.Id == keywordId)
+            .Select(x => new KeywordViewModel
+            {
+                KeywordId = x.Id,
+                Name = x.Name,
+                FileName = x.File.Name,
+                AdWordsCount = x.AdWordsCount,
+                LinkCount = x.LinkCount,
+                RequestDuration = x.RequestDuration,
+                TotalThouthandResultsCount = x.TotalThouthandResultsCount,
+                FileId = x.FileId,
+                ParsedDate = x.ParsedDate,
+                ParsingStatus = x.ParsingStatus
+            })
+            .FirstOrDefault();
+            if (model == null)
+                return NotFound();
+
+            return PartialView("_Details", model);
+        }
+
+        public IActionResult Cached(int keywordId)
+        {
+            var userId = _dbContext.GetUserId(User.Identity.Name);
+
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var model = _dbContext.Keywords.Where(x => x.File.CreatedByUserId == userId && x.Id == keywordId)
+            .FirstOrDefault();
+            if (model == null)
+                return NotFound();
+
+            return View("Cached", model);
         }
 
     }

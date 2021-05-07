@@ -15,7 +15,7 @@
             <div class="card mb-2">
                 <div class="card-body">
                     <h5 class="card-title">@csvFile.Name</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">@csvFile.CreatedDate</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">@csvFile.CreatedDate.ToString("d")</h6>
                     <p class="card-text">@csvFile.TotalKeywordsCount keywords.</p>
                     <p class="card-text">@(csvFile.ParsedPercent)% parsed.</p>
                     <div class="progress">
@@ -29,7 +29,8 @@
     </div>
     <a href="#" class="btn btn-primary">All files</a>
 </section>
-<section id="parsedKeywordsList" class="pt-3">
-    <h2>Last Keyword parsed:</h2>
-    <a href="/Keyword/Index" class="btn btn-primary mt-2">All Keywords</a>
+<section id="parsedKeywordsList" class="pt-3" data-load-ajax="/Keyword/LastParsed">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
 </section>
