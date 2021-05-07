@@ -16,7 +16,11 @@
                 <div class="card-body">
                     <h5 class="card-title">@csvFile.Name</h5>
                     <h6 class="card-subtitle mb-2 text-muted">@csvFile.CreatedDate</h6>
-                    <p class="card-text">Keywords preview? + status or progress bar?</p>
+                    <p class="card-text">@csvFile.TotalKeywordsCount keywords.</p>
+                    <p class="card-text">@(csvFile.ParsedPercent)% parsed.</p>
+                    <div class="progress">
+                        <div class="progress-bar @(csvFile.ParsedPercent == 100 ? "bg-success" : "")" role="progressbar" style="width: @csvFile.ParsedPercent%;" aria-valuenow="@csvFile.ParsedPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
                     <a href="/Keyword/Index?fileId=@(csvFile.FileId)" class="card-link">View all keywords</a>
                 </div>
             </div>

@@ -11,6 +11,7 @@ namespace KeywordsApp.Models.Keyword
         public KeywordEntity(string name)
         {
             Name = name;
+            ParsingStatus = ParsingStatus.Pending;
         }
         public int Id { get; set; }
 

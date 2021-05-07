@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using KeywordsApp.Models.File;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using KeywordsApp.Models.Keyword;
 
 namespace keywords.Controllers
 {
@@ -43,7 +44,8 @@ namespace keywords.Controllers
                     FileId = x.Id,
                     Name = x.Name,
                     CreatedDate = x.CreatedDate,
-                    KeywordsCount = x.Keywords.Count()
+                    TotalKeywordsCount = x.Keywords.Count(),
+                    ParsedKeywordsCount = x.Keywords.Where(y => y.ParsingStatus == ParsingStatus.Succeed).Count()
                 })
                 .OrderByDescending(x => x.CreatedDate)
                 .Take(4)
