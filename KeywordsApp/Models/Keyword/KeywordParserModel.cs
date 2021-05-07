@@ -59,6 +59,14 @@ namespace KeywordsApp.Models.Keyword
                 _keywordResult.ErrorMsg = "Cannot find request stats string";
                 return;
             }
+            ParseRequestStatsDuration(requestStatsString);
+            if (!_keywordResult.IsValid)
+                return;
+            ParseRequestStatsResultCount(requestStatsString);
+
+        }
+        private void ParseRequestStatsDuration(string requestStatsString)
+        {
             // (0,78 giay)
             var durationParenthesis = Regex.Matches(requestStatsString, @"\(.*\)");
             if (durationParenthesis.Count == 0)
@@ -100,6 +108,28 @@ namespace KeywordsApp.Models.Keyword
             }
 
             _keywordResult.RequestDuration = seconds * 1000 + decimals * 10;
+        }
+        private void ParseRequestStatsResultCount(string requestStatsString)
+        {
+            // About 340,000,000 results (0.68 seconds)
+            // ==>  340,000,000 
+            var requestCountMatches = Regex.Matches(requestStatsString, @"[ ][0-9,\. ]+");
+            if (requestCountMatches.Count == 0)
+            {
+                _keywordResult.ErrorMsg = string.Format("Cannot parse results count from {0}", requestStatsString);
+                return;
+            }
+            // ==>340000000 
+            var requestCountString = requestCountMatches[0].Value.Replace(" ", "");
+            requestCountString = requestCountString.Replace(",", "");
+            requestCountString = requestCountString.Replace(".", "");
+            double resultCount = 0;
+            if (!double.TryParse(requestCountString, out resultCount))
+            {
+                _keywordResult.ErrorMsg = string.Format("Cannot parse resultCount to double from {0}", resultCount);
+                return;
+            }
+            _keywordResult.TotalThouthandResultsCount = (int)(resultCount / 1000);
         }
     }
 

@@ -43,6 +43,30 @@ namespace KeywordsApp.Tests.Keyword
                 Assert.False(result.IsValid);
             }
 
+
+            [Theory]
+            [InlineData("About results")]
+            [InlineData("")]
+            public void ParseMethod4_CannotParseRequestResultCount_IsNotValid(string value)
+            {
+                var parser = new KeywordParserFake();
+                parser.RawHtmlContent = parser.RawHtmlContent.Replace("About 1,780,000,000 results", value);
+                var result = parser.ParseHtml();
+                Assert.False(result.IsValid);
+            }
+
+            [Theory]
+            [InlineData("About 1.780.000.000 results")]
+            [InlineData("About 1 780 000 000 results")]
+            [InlineData("About 1780000000 results")]
+            public void ParseMethod3_CanParseRequestResultCount_IsValid(string value)
+            {
+                var parser = new KeywordParserFake();
+                parser.RawHtmlContent = parser.RawHtmlContent.Replace("About 1,780,000,000 results", value);
+                var result = parser.ParseHtml();
+                Assert.True(result.IsValid);
+            }
+
         }
     }
 
