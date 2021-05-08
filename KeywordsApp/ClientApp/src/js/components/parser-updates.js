@@ -11,6 +11,9 @@ connection.on(
     $.post(url, { keywordId: keywordId }, (data) => {
       container.children().last().remove();
       container.prepend(data);
+      $('#parsedKeywordsListContainer div.card')
+        .first()
+        .effect('highlight', { color: '#78ff96' }, 1000);
     });
   }
 );

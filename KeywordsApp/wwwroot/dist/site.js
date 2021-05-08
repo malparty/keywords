@@ -50,6 +50,9 @@ connection.on(
     $.post(url, { keywordId: keywordId }, (data) => {
       container.children().last().remove();
       container.prepend(data);
+      $('#parsedKeywordsListContainer div.card')
+        .first()
+        .effect('highlight', { color: '#78ff96' }, 1000);
     });
   }
 );
@@ -148,7 +151,10 @@ class UploadForm {
     const container = $('#csvFilesListContainer');
     $.post(url, { fileId: newFileId }, (data) => {
       container.prepend(data);
-      container.children().last().hide();
+      container.children().last().remove();
+      $('#csvFilesListContainer div.card')
+        .first()
+        .effect('highlight', { color: '#78ff96' }, 1000);
     });
   };
 }

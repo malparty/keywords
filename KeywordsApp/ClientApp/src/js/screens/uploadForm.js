@@ -73,6 +73,9 @@ class UploadForm {
     $.post(url, { fileId: newFileId }, (data) => {
       container.prepend(data);
       container.children().last().remove();
+      $('#csvFilesListContainer div.card')
+        .first()
+        .effect('highlight', { color: '#78ff96' }, 1000);
     });
   };
 }
