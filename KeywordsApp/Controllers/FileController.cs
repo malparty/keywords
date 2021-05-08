@@ -32,7 +32,6 @@ namespace keywords.Controllers
 
         public IActionResult Index()
         {
-
             var userId = _dbContext.GetUserId(User.Identity.Name);
 
             if (string.IsNullOrEmpty(userId))
@@ -51,6 +50,31 @@ namespace keywords.Controllers
                 .Take(4)
                 .ToList();
             return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Details(int fileId)
+        {
+            var userId = _dbContext.GetUserId(User.Identity.Name);
+
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var model = _dbContext.Files.Where(x => x.CreatedByUserId == userId && x.Id == fileId)
+            .Select(x => new FileViewModel
+            {
+                FileId = x.Id,
+                Name = x.Name,
+                ParsedKeywordsCount = x.Keywords.Count(y => y.ParsingStatus == ParsingStatus.Succeed),
+                TotalKeywordsCount = x.Keywords.Count(),
+                CreatedDate = x.CreatedDate
+            })
+            .FirstOrDefault();
+
+            if (model == null)
+                return NotFound();
+
+            return PartialView("_Details", model);
         }
 
         public IActionResult HeaderIntro(int fileId = 0)
@@ -102,6 +126,9 @@ namespace keywords.Controllers
                 _logger.LogError(0, e, "Db Context failed to persist File for user: " + userId);
                 uploadFormViewModel.ErrorMsg = "The file could not be saved. Please try again.";
             }
+
+            // Enable UI to get back newly created File
+            uploadFormViewModel.PreviousFileId = fileEntity.Id;
 
             return PartialView("_UploadForm", uploadFormViewModel);
         }

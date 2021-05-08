@@ -6,25 +6,12 @@
 <section id="uploadFormContainer">
     <partial name="_UploadForm" model=null />
 </section>
-<section id="csvFilesList">
-    <h2>Last files uploaded:</h2>
-    <div class="row">
+<section id="csvFilesList" data-url="/File/Details" >
+    <h2>Last uploaded files:</h2>
+    <div id="csvFilesListContainer" class="row">
     @foreach (var csvFile in Model)
     {
-        <div class="col-lg-3 col-md-6">
-            <div class="card mb-2">
-                <div class="card-body">
-                    <h5 class="card-title">@csvFile.Name</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">@csvFile.CreatedDate.ToString("d")</h6>
-                    <p class="card-text">@csvFile.TotalKeywordsCount keywords.</p>
-                    <p class="card-text">@(csvFile.ParsedPercent)% parsed.</p>
-                    <div class="progress">
-                        <div class="progress-bar @(csvFile.ParsedPercent == 100 ? "bg-success" : "")" role="progressbar" style="width: @csvFile.ParsedPercent%;" aria-valuenow="@csvFile.ParsedPercent" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <a href="/Keyword/Index?fileId=@(csvFile.FileId)" class="card-link">View all keywords</a>
-                </div>
-            </div>
-        </div>
+        @Html.Partial("_Details", csvFile)
     }
     </div>
     <a href="#" class="btn btn-primary">All files</a>

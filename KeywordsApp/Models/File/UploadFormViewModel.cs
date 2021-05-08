@@ -16,6 +16,7 @@ namespace KeywordsApp.Models.File
         private int _maxCsvFileSizeUpload;
         public List<string> Keywords { get; set; }
         public string FileName { get; internal set; }
+        public int PreviousFileId { get; set; }
         public string ErrorMsg { get; set; }
         public string SuccessMsg { get; set; }
         public bool IsValid { get { return string.IsNullOrEmpty(ErrorMsg); } }
