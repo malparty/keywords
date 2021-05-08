@@ -99,6 +99,7 @@ namespace keywords.Controllers
             return PartialView("_LastParsed", model);
         }
 
+        [HttpPost]
         public IActionResult Details(int keywordId)
         {
             var userId = _dbContext.GetUserId(User.Identity.Name);

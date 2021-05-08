@@ -1,16 +1,11 @@
 using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Threading.Tasks;
 
 namespace KeywordsApp.Hubs
 {
+    // This class is empty because the server does not 
+    // need to receive any call from the clients.
+    // Though we need it to send calls to our clients
     public class ParserHub : Hub<IParser>
     {
-        // // Event from outside
-        // public async Task SendStatusUpdate(int fileId, int keywordId, string keywordName, string status, string errorMsg)
-        // {
-        //     // Console.WriteLine("ParserHUB WORKING {0}, {1}, {2}", username, keywordId, status);
-        //     // await Clients.User(username).KeywordStatusUpdate("ReceiveStatusUpdate", keywordId, status);
-        // }
     }
 }

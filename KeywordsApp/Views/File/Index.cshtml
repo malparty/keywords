@@ -6,7 +6,7 @@
 <section id="uploadFormContainer">
     <partial name="_UploadForm" model=null />
 </section>
-<section id="csvFilesList" data-url="/File/Details" >
+<section id="csvFilesList" data-single-load="/File/Details" >
     <h2>Last uploaded files:</h2>
     <div id="csvFilesListContainer" class="row">
         @foreach (var csvFile in Model)
@@ -16,7 +16,7 @@
     </div>
     <a href="#" class="btn btn-primary">All files</a>
 </section>
-<section id="parsedKeywordsList" class="pt-3" data-load-ajax="/Keyword/LastParsed">
+<section id="parsedKeywordsList" class="pt-3" data-load-ajax="/Keyword/LastParsed" data-single-load="/Keyword/Details">
     <div class="spinner-border text-primary" role="status">
         <span class="sr-only">Loading...</span>
     </div>

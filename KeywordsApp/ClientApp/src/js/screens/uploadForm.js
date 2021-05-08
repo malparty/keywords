@@ -68,11 +68,11 @@ class UploadForm {
   };
 
   loadNewCard = (newFileId) => {
-    const url = $('#csvFilesList').data('url');
+    const url = $('#csvFilesList').data('single-load');
     const container = $('#csvFilesListContainer');
     $.post(url, { fileId: newFileId }, (data) => {
       container.prepend(data);
-      container.children().last().hide();
+      container.children().last().remove();
     });
   };
 }

@@ -41,17 +41,18 @@ $(function () {
 
 var connection = new signalR.HubConnectionBuilder().withUrl('/parser').build();
 
-connection.on('KeywordStatusUpdate', function (user, message) {
-  console.log('YEAAAAH!!!');
-  console.log(user);
-  console.log(message);
-  var msg = message
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-  var encodedMsg = user + ' KeywordStatusUpdate ' + msg;
-  alert(encodedMsg);
-});
+connection.on(
+  'KeywordStatusUpdate',
+  function (fileId, keywordId, keywordName, status, errorMsg) {
+    // Prepend new keyword in the last parsed keyword UI
+    const url = $('#parsedKeywordsList').data('single-load');
+    const container = $('#parsedKeywordsListContainer');
+    $.post(url, { keywordId: keywordId }, (data) => {
+      container.children().last().remove();
+      container.prepend(data);
+    });
+  }
+);
 
 connection
   .start()
@@ -143,7 +144,7 @@ class UploadForm {
   };
 
   loadNewCard = (newFileId) => {
-    const url = $('#csvFilesList').data('url');
+    const url = $('#csvFilesList').data('single-load');
     const container = $('#csvFilesListContainer');
     $.post(url, { fileId: newFileId }, (data) => {
       container.prepend(data);
