@@ -73,8 +73,19 @@ namespace KeywordsApp.HostedServices
 
         private async Task SendNotification(KeywordParserModel keyword, string errorMsg)
         {
+            // Get file progress %
+            int? percent;
+            using (var scope = _scopeFactory.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<KeywordContext>();
+                percent = dbContext.Files.Where(x => x.Id == keyword.FileId)
+                    .Select(x =>
+                        (100 * (x.Keywords.Where(k => k.ParsingStatus == ParsingStatus.Succeed).Count())) / x.Keywords.Count())
+                        .FirstOrDefault();
+            }
+
             var status = string.IsNullOrEmpty(errorMsg) ? "success" : "fail";
-            await _parserHub.Clients.All.KeywordStatusUpdate(keyword.KeywordId, keyword.KeywordId, keyword.Name, status, errorMsg);
+            await _parserHub.Clients.User(keyword.UserId).KeywordStatusUpdate(keyword.FileId, percent ?? 0, keyword.KeywordId, keyword.Name, status, errorMsg);
         }
 
         private async Task<string> ParseKeyword(KeywordParserModel keyword)
@@ -209,7 +220,8 @@ namespace KeywordsApp.HostedServices
                 {
                     KeywordId = x.Id,
                     Name = x.Name,
-                    UserName = x.File.CreatedByUser.UserName
+                    UserId = x.File.CreatedByUserId,
+                    FileId = x.FileId
                 }).ToList();
             }
             return pendingKeywords;

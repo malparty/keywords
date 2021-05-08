@@ -10,7 +10,7 @@ namespace KeywordsApp.Models.Keyword
     {
         public int FileId { get; set; }
         public int KeywordId { get; set; }
-        public string UserName { get; set; }
+        public string UserId { get; set; }
         public string Name { get; set; }
         public string RawHtmlContent { get; set; }
         public HtmlNode BodyNode { get; set; }

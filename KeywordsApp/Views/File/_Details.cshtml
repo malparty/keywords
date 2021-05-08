@@ -1,12 +1,13 @@
 @model KeywordsApp.Models.File.FileViewModel
 
 <div class="col-lg-3 col-md-6">
-    <div id="fileCard@Model.FileId" class="card mb-2">
+    <div id="@(string.Format("fileCard{0}",Model.FileId))" class="card mb-2">
         <div class="card-body">
-            <h5 class="card-title">@Model.Name</h5>
+            <h5 class="card-title">
+                @Model.Name
+                <span class="badge badge-secondary" title="Number of keywords">@Model.TotalKeywordsCount</span>
+            </h5>
             <h6 class="card-subtitle mb-2 text-muted">@Model.CreatedDate.ToString("d")</h6>
-            <p class="card-text">@Model.TotalKeywordsCount keywords.</p>
-            <p class="card-text">@(Model.ParsedPercent)% parsed.</p>
             <div class="progress">
                 <div class="progress-bar @(Model.ParsedPercent == 100 ? "bg-success" : "")" 
                     role="progressbar" 
@@ -14,6 +15,7 @@
                     aria-valuenow="@Model.ParsedPercent" 
                     aria-valuemin="0" 
                     aria-valuemax="100">
+                    @(Model.ParsedPercent)%
                 </div>
             </div>
             <a href="/Keyword/Index?fileId=@(Model.FileId)" class="card-link">View all keywords</a>

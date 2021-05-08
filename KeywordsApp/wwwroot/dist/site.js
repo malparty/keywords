@@ -43,7 +43,7 @@ var connection = new signalR.HubConnectionBuilder().withUrl('/parser').build();
 
 connection.on(
   'KeywordStatusUpdate',
-  function (fileId, keywordId, keywordName, status, errorMsg) {
+  function (fileId, percent, keywordId, keywordName, status, errorMsg) {
     // Prepend new keyword in the last parsed keyword UI
     const url = $('#parsedKeywordsList').data('single-load');
     const container = $('#parsedKeywordsListContainer');
@@ -54,6 +54,10 @@ connection.on(
         .first()
         .effect('highlight', { color: '#78ff96' }, 1000);
     });
+    // update file percent progress
+    const fileContainer = $('#fileCard' + fileId);
+    fileContainer.find('.progress-bar').width(percent + '%');
+    fileContainer.find('.progress-bar').html(percent + '%');
   }
 );
 
