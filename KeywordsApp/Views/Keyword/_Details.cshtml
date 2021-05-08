@@ -1,7 +1,6 @@
 @model KeywordViewModel
 
-<div class="col-lg-3 col-md-6">
-    <div class="card mb-2">
+<div class="card mb-2">
     <div class="card-body">
         <h5 class="card-title">@Model.Name</h5>
         <h6 class="card-subtitle mb-2 text-muted">
@@ -42,6 +41,5 @@
             <b>Results:</b> @Model.TotalThouthandResultsCount
         </p>
         <a href="/Keyword/Cached?keywordId=@Model.KeywordId" target="_blank" class="card-link">View cached page</a>
-    </div>
     </div>
 </div>

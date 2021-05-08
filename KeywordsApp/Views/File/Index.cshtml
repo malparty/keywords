@@ -9,10 +9,10 @@
 <section id="csvFilesList" data-url="/File/Details" >
     <h2>Last uploaded files:</h2>
     <div id="csvFilesListContainer" class="row">
-    @foreach (var csvFile in Model)
-    {
-        @Html.Partial("_Details", csvFile)
-    }
+        @foreach (var csvFile in Model)
+        {
+            @Html.Partial("_Details", csvFile)
+        }
     </div>
     <a href="#" class="btn btn-primary">All files</a>
 </section>
