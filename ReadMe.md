@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/malparty/keywords/workflows/test/badge.svg?branch=main)](https://github.com/malparty/keywords)
+[![Build Status](https://github.com/malparty/keywords/workflows/Tests/badge.svg?branch=main)](https://github.com/malparty/keywords)
 
 # Introduction
 
@@ -21,7 +21,7 @@
 
 ## Docker
 
-_We use Docker for our PosgreSQL db only._
+_Docker is only used for PosgreSQL db._
 
 - Install Docker [for Mac](https://docs.docker.com/docker-for-mac/install/), [for Windows](https://docs.docker.com/docker-for-windows/install/)
 
@@ -53,27 +53,63 @@ _We use Docker for our PosgreSQL db only._
   dotnet-ef database update
   ```
 
-- Run the app
+## Run the app
+
+### Manually:
+
+- Build css/js
 
   ```sh
-  dotnet run
+  cd ./KeywordsApp/ClientApp
   ```
 
-## Development
+  ```sh
+  webpack start
+  ```
 
-- Watch available:
+- Run the dotnet app (back in the KeywordsApp project folder)
 
   ```sh
-  cd .\KeywordsApp\
+  cd ../
   ```
 
   ```sh
   dotnet watch run
   ```
 
+### Via script:
+
+- From the repository root folder, run dev.sh
+
+  ```sh
+  .\dev.sh
+  ```
+
+## Build
+
+- Build minified js/css:
+
+  ```sh
+  cd ./KeywordsApp/ClientApp
+  ```
+
+  ```sh
+  webpack build
+  ```
+
+- Build dotnet project
+
+  ```sh
+  cd ../
+  ```
+
+  ```sh
+  dotnet build --configuration Release
+  ```
+
 ## Tests
 
-- unit tests can be run with this command (from root folder)
+- Tests can be run with this command (from root folder)
 
 ```sh
 dotnet test
