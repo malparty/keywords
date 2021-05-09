@@ -1,0 +1,11 @@
+@model KeywordListViewModel
+<form method="GET" action="/Keyword/Index">
+    <div class="input-group">
+        <input class="form-control" type="text" name="search" value="@Model?.Search" placeholder="Search keywords" aria-label="Search for keywords" aria-describedby="buttonSearchKeyword"/>
+        <input type="hidden" name="orderby" value="@Model?.OrderBy" />
+        <input type="hidden" name="fileid" value="@Model?.FileId" />
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="submit" id="buttonSearchKeyword"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+</form>

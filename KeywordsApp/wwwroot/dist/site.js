@@ -1,6 +1,46 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/js/components/keyword-expand.js":
+/*!*********************************************!*\
+  !*** ./src/js/components/keyword-expand.js ***!
+  \*********************************************/
+/***/ (() => {
+
+class KeywordExpand {
+  initLoader = () => {
+    $('button[data-toggle=expandview').click(toggleExpandView);
+  };
+}
+
+toggleExpandView = () => {
+  const isExpanded = $('.keyword-body').first().hasClass('card-body');
+  if (isExpanded) {
+    // Need to close
+    $('.keyword-body').removeClass('card-body');
+    $('.keyword').removeClass('card');
+    $('.keyword .card-text').hide();
+    $('button[data-toggle=expandview').html(
+      '<i class="fas fa-tachometer-alt"></i> Show results'
+    );
+    return;
+  }
+  // Need to expand
+  $('.keyword-body').addClass('card-body');
+  $('.keyword').addClass('card');
+  $('.keyword .card-text').show();
+  $('button[data-toggle=expandview').html(
+    '<i class="fas fa-eye-slash"></i> Hide results'
+  );
+};
+
+$(function () {
+  new KeywordExpand().initLoader();
+});
+
+
+/***/ }),
+
 /***/ "./src/js/components/loader-ajax.js":
 /*!******************************************!*\
   !*** ./src/js/components/loader-ajax.js ***!
@@ -26,6 +66,51 @@ class SectionDataLoader {
 $(function () {
   new SectionDataLoader().initLoader();
 });
+
+
+/***/ }),
+
+/***/ "./src/js/components/parser-updates.js":
+/*!*********************************************!*\
+  !*** ./src/js/components/parser-updates.js ***!
+  \*********************************************/
+/***/ (() => {
+
+"use strict";
+
+
+var connection = new signalR.HubConnectionBuilder().withUrl('/parser').build();
+
+connection.on(
+  'KeywordStatusUpdate',
+  function (fileId, percent, keywordId, keywordName, status, errorMsg) {
+    // Prepend new keyword in the last parsed keyword UI
+    const url = $('#parsedKeywordsList').data('single-load');
+    const container = $('#parsedKeywordsListContainer');
+    $.post(url, { keywordId: keywordId }, (data) => {
+      container.children().last().remove();
+      container.prepend(data);
+      $('#parsedKeywordsListContainer div.card')
+        .first()
+        .effect('highlight', { color: '#78ff96' }, 1000);
+    });
+    // update file percent progress
+    const fileContainer = $('#fileCard' + fileId);
+    fileContainer.find('.progress-bar').width(percent + '%');
+    fileContainer.find('.progress-bar').html(percent + '%');
+  }
+);
+
+connection
+  .start()
+  .then(function () {
+    $('#signalRBadge').removeClass('badge-light');
+    $('#signalRBadge').addClass('badge-success');
+    $('#signalRBadge').attr('title', 'SignalR connected!');
+  })
+  .catch(function (err) {
+    return console.error(err.toString());
+  });
 
 
 /***/ }),
@@ -93,11 +178,27 @@ class UploadForm {
       timeout: 600000,
       success: function (data) {
         $('#uploadFormContainer').html(data);
-        new UploadForm().initForm();
+        const uploadForm = new UploadForm();
+        uploadForm.initForm();
+        const newFileId = $('#previousFileId').val();
+        // Load newly created card
+        uploadForm.loadNewCard(newFileId);
       },
       error: function (e) {
         console.log('ERROR : ', e);
       },
+    });
+  };
+
+  loadNewCard = (newFileId) => {
+    const url = $('#csvFilesList').data('single-load');
+    const container = $('#csvFilesListContainer');
+    $.post(url, { fileId: newFileId }, (data) => {
+      container.prepend(data);
+      container.children().last().remove();
+      $('#csvFilesListContainer div.card')
+        .first()
+        .effect('highlight', { color: '#78ff96' }, 1000);
     });
   };
 }
@@ -184,10 +285,16 @@ var __webpack_exports__ = {};
   !*** ./src/js/site.js ***!
   \************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../js/components/loader-ajax.js */ "./src/js/components/loader-ajax.js");
-/* harmony import */ var _js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../js/screens/uploadForm.js */ "./src/js/screens/uploadForm.js");
-/* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _js_components_parser_updates_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../js/components/parser-updates.js */ "./src/js/components/parser-updates.js");
+/* harmony import */ var _js_components_parser_updates_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_js_components_parser_updates_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../js/components/loader-ajax.js */ "./src/js/components/loader-ajax.js");
+/* harmony import */ var _js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../js/screens/uploadForm.js */ "./src/js/screens/uploadForm.js");
+/* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _js_components_keyword_expand_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../js/components/keyword-expand.js */ "./src/js/components/keyword-expand.js");
+/* harmony import */ var _js_components_keyword_expand_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_js_components_keyword_expand_js__WEBPACK_IMPORTED_MODULE_3__);
+
+
 
 
 

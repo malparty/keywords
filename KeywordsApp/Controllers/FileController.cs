@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http;
 using KeywordsApp.Models.File;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using KeywordsApp.Models.Keyword;
+using X.PagedList;
 
 namespace keywords.Controllers
 {
@@ -31,7 +33,6 @@ namespace keywords.Controllers
 
         public IActionResult Index()
         {
-
             var userId = _dbContext.GetUserId(User.Identity.Name);
 
             if (string.IsNullOrEmpty(userId))
@@ -42,13 +43,40 @@ namespace keywords.Controllers
                 {
                     FileId = x.Id,
                     Name = x.Name,
+                    ShowProgressBar = true,
                     CreatedDate = x.CreatedDate,
-                    KeywordsCount = x.Keywords.Count()
+                    TotalKeywordsCount = x.Keywords.Count(),
+                    ParsedKeywordsCount = x.Keywords.Where(y => y.ParsingStatus == ParsingStatus.Succeed).Count()
                 })
                 .OrderByDescending(x => x.CreatedDate)
                 .Take(4)
                 .ToList();
             return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Details(int fileId)
+        {
+            var userId = _dbContext.GetUserId(User.Identity.Name);
+
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var model = _dbContext.Files.Where(x => x.CreatedByUserId == userId && x.Id == fileId)
+            .Select(x => new FileViewModel
+            {
+                FileId = x.Id,
+                Name = x.Name,
+                ParsedKeywordsCount = x.Keywords.Count(y => y.ParsingStatus == ParsingStatus.Succeed),
+                TotalKeywordsCount = x.Keywords.Count(),
+                CreatedDate = x.CreatedDate
+            })
+            .FirstOrDefault();
+
+            if (model == null)
+                return NotFound();
+
+            return PartialView("_Details", model);
         }
 
         public IActionResult HeaderIntro(int fileId = 0)
@@ -101,7 +129,41 @@ namespace keywords.Controllers
                 uploadFormViewModel.ErrorMsg = "The file could not be saved. Please try again.";
             }
 
+            // Enable UI to get back newly created File
+            uploadFormViewModel.PreviousFileId = fileEntity.Id;
+
             return PartialView("_UploadForm", uploadFormViewModel);
+        }
+
+        public IActionResult Search(int page = 1, string search = null)
+        {
+            var userId = _dbContext.GetUserId(User.Identity.Name);
+
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var query = _dbContext.Files.Where(x => x.CreatedByUserId == userId);
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchLow = search.ToLower();
+                query = query.Where(x => x.Name.ToLower().Contains(searchLow));
+            }
+            query = query.OrderByDescending(x => x.CreatedDate).ThenBy(x => x.Name);
+            var model = new FileListViewModel
+            {
+                Search = search,
+            };
+            model.Files = query.Select(x => new FileViewModel
+            {
+                CreatedDate = x.CreatedDate,
+                FileId = x.Id,
+                Name = x.Name,
+                ShowProgressBar = false,
+                ParsedKeywordsCount = x.Keywords.Where(k => k.ParsingStatus == ParsingStatus.Succeed).Count(),
+                TotalKeywordsCount = x.Keywords.Count()
+            }).ToPagedList(page, 20);
+
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

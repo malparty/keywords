@@ -1,0 +1,9 @@
+@model string
+<form method="GET" action="/File/Search">
+    <div class="input-group">
+        <input class="form-control" type="text" name="search" value="@Model" placeholder="Search files" aria-label="Search for files" aria-describedby="buttonSearchFile"/>
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="submit" id="buttonSearchFile"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+</form>

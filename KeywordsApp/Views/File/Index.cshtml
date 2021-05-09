@@ -6,26 +6,25 @@
 <section id="uploadFormContainer">
     <partial name="_UploadForm" model=null />
 </section>
-<section id="csvFilesList">
-    <h2>Last files uploaded:</h2>
+<section id="csvFilesList" data-single-load="/File/Details" >
     <div class="row">
-    @foreach (var csvFile in Model)
-    {
-        <div class="col-lg-3 col-md-6">
-            <div class="card mb-2">
-                <div class="card-body">
-                    <h5 class="card-title">@csvFile.Name</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">@csvFile.CreatedDate</h6>
-                    <p class="card-text">Keywords preview? + status or progress bar?</p>
-                    <a href="/Keyword/Index?fileId=@(csvFile.FileId)" class="card-link">View all keywords</a>
-                </div>
-            </div>
+        <div class="col-lg-9 col-md-8 mt-sm-3 mt-md-0">
+            <h2>Last uploaded files:</h2>
         </div>
-    }
+        <div class="col-lg-3 col-md-4 mb-3 mb-md-0">
+            <partial name="_SearchForm" model=string.Empty />
+        </div>
     </div>
-    <a href="#" class="btn btn-primary">All files</a>
+    <div id="csvFilesListContainer" class="row">
+        @foreach (var csvFile in Model)
+        {
+            <partial name="_Details" model=csvFile />
+        }
+    </div>
+    <a href="/File/Search" class="btn btn-primary">All files</a>
 </section>
-<section id="parsedKeywordsList" class="pt-3">
-    <h2>Last Keyword parsed:</h2>
-    <a href="/Keyword/Index" class="btn btn-primary mt-2">All Keywords</a>
+<section id="parsedKeywordsList" class="pt-3" data-load-ajax="/Keyword/LastParsed" data-single-load="/Keyword/Details">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
 </section>

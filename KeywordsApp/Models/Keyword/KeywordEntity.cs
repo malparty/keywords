@@ -11,6 +11,7 @@ namespace KeywordsApp.Models.Keyword
         public KeywordEntity(string name)
         {
             Name = name;
+            ParsingStatus = ParsingStatus.Pending;
         }
         public int Id { get; set; }
 
@@ -19,6 +20,16 @@ namespace KeywordsApp.Models.Keyword
         public DateTime? ParsedDate { get; set; }
         public ParsingStatus ParsingStatus { get; set; }
 
+        #region Keyword Results
+        public int AdWordsCount { get; set; }
+        public int LinkCount { get; set; }
+
+        public int TotalThouthandResultsCount { get; set; }
+        public string HtmlCode { get; set; }
+
+        // Miliseconds
+        public int RequestDuration { get; set; }
+        #endregion
         public int FileId { get; set; }
         public FileEntity File { get; set; }
     }

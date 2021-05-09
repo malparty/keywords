@@ -52,7 +52,16 @@ namespace KeywordsApp.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int>("AdWordsCount")
+                        .HasColumnType("integer");
+
                     b.Property<int>("FileId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("HtmlCode")
+                        .HasColumnType("text");
+
+                    b.Property<int>("LinkCount")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -62,6 +71,12 @@ namespace KeywordsApp.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("ParsingStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RequestDuration")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalThouthandResultsCount")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");

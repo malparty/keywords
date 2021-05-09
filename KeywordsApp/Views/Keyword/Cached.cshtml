@@ -1,0 +1,12 @@
+@model KeywordEntity
+
+<h1>
+    Cached page for 
+    <b>
+        @Model.Name
+    </b>
+</h1>
+<div class="container-cached-page">
+    @Html.Raw(Model.HtmlCode)
+</div>
+

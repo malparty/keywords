@@ -55,11 +55,27 @@ class UploadForm {
       timeout: 600000,
       success: function (data) {
         $('#uploadFormContainer').html(data);
-        new UploadForm().initForm();
+        const uploadForm = new UploadForm();
+        uploadForm.initForm();
+        const newFileId = $('#previousFileId').val();
+        // Load newly created card
+        uploadForm.loadNewCard(newFileId);
       },
       error: function (e) {
         console.log('ERROR : ', e);
       },
+    });
+  };
+
+  loadNewCard = (newFileId) => {
+    const url = $('#csvFilesList').data('single-load');
+    const container = $('#csvFilesListContainer');
+    $.post(url, { fileId: newFileId }, (data) => {
+      container.prepend(data);
+      container.children().last().remove();
+      $('#csvFilesListContainer div.card')
+        .first()
+        .effect('highlight', { color: '#78ff96' }, 1000);
     });
   };
 }

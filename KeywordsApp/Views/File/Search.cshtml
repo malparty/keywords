@@ -1,0 +1,33 @@
+@model KeywordsApp.Models.File.FileListViewModel
+@{
+    ViewData["Title"] = Model.Search == null? "All files":"File Search";
+}
+<section id="fileSearch">
+    <div class="row">
+        <div class="col-lg-9 col-md-8">
+        @if(Model.Search == null){
+            <h2>All files</h2>
+        }
+        else{
+            <h2>Searching files for "<small>@Model.Search</small>"</h2>
+        }
+        </div>
+        <div class="col-lg-3 col-md-4  mb-3 mb-md-0">
+            <partial name="_SearchForm" model=Model.Search />
+        </div>
+    </div>
+</section>
+<section id="fileList">
+
+    <div class="row">
+    @foreach (var file in Model.Files)
+    {
+        <partial name="_Details" model=file />
+    }
+    </div>
+    @if(Model.Files.PageCount > 1){
+        <nav class="mt-2 mb-2">
+            @Html.PagedListPager(Model.Files, page => Url.Action("Search", new { page, Model.Search }),Model.PageListOptions.PagedListRenderOptions)
+        </nav>
+    }
+</section>

@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
@@ -5,14 +6,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using KeywordsApp.Data;
-using System;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity.UI.Services;
+
+using KeywordsApp.Data;
 using KeywordsApp.Models;
 using KeywordsApp.Areas.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using KeywordsApp.Areas.Identity.Services;
 using KeywordsApp.Models.File;
+using KeywordsApp.Hubs;
+using KeywordsApp.HostedServices;
 
 namespace KeywordsApp
 {
@@ -46,6 +49,9 @@ namespace KeywordsApp
 
 
             services.AddRazorPages();
+            services.AddSignalR();
+            services.AddHostedService<ParserService>();
+            services.AddSingleton<IGoogleParser, GoogleParser>();
 
             services.AddScoped<IUserClaimsPrincipalFactory<UserEntity>, UserClaimsPrincipalFactory>();
 
@@ -86,6 +92,7 @@ namespace KeywordsApp
                     name: "default",
                     pattern: "{controller=File}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ParserHub>("/parser");
             });
 
         }
