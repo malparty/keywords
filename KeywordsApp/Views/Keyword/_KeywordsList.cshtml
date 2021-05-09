@@ -4,8 +4,21 @@
     <div class="row">
         @foreach (var keyword in Model)
         {
-            <div class="keyword col-lg-2 col-md-3 col-sm-4">
-                @keyword.Name
+            <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                <div class="keyword card mb-2">
+                <div class="keyword-body card-body">
+                    <div>@keyword.Name</div>
+                    <p class="card-text alert-light">
+                        <i class="fas fa-stopwatch"></i> @(keyword.RequestDuration)ms
+                        <br />
+                        <i class="fas fa-list-ol"></i> @((keyword.TotalThouthandResultsCount*1000).ToString("N0"))
+                        <br />
+                        <i class="fas fa-link"></i> @keyword.LinkCount
+                        <br />
+                        <i class="fas fa-ad"></i> @keyword.AdWordsCount
+                    </p>
+                </div>
+                </div>
             </div>
         }
     </div>

@@ -33,11 +33,11 @@
             <p class="card-text">
                 <b>Load:</b> @(Model.RequestDuration)ms
                 <br />
-                <b>AdWords:</b> @Model.AdWordsCount
+                <b>Results:</b> @((Model.TotalThouthandResultsCount*1000).ToString("N0"))
                 <br />
                 <b>Links:</b> @Model.LinkCount
                 <br />
-                <b>Results:</b> @Model.TotalThouthandResultsCount
+                <b>AdWords:</b> @Model.AdWordsCount
             </p>
             <a href="/Keyword/Cached?keywordId=@Model.KeywordId" target="_blank" class="card-link">View cached page</a>
         </div>
