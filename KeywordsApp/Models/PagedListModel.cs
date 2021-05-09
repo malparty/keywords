@@ -13,7 +13,8 @@ namespace KeywordsApp.Models
                     UlElementClasses = new string[] { "pagination" },
                     LiElementClasses = new string[] { "page-item" },
                     ActiveLiElementClass = "active",
-                    PageClasses = new string[] { "page-link" }
+                    PageClasses = new string[] { "page-link" },
+                    EllipsesElementClass = "page-link",
                 };
             }
         }

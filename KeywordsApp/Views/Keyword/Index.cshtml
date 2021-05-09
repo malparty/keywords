@@ -9,6 +9,20 @@
         </div>
     </section>
 }
+<section id="keywordListSearchForm">
+    @if(Model.OrderBy != KeywordOrderBy.NameAsc){
+        <a href="/Keyword/Index?orderby=NameAsc" title="Order by Name ascending"><i class="fas fa-sort-alpha-down"></i></a>
+    }
+    @if(Model.OrderBy == KeywordOrderBy.NameAsc){
+        <a href="/Keyword/Index?orderby=NameDesc" title="Order by Name descending"><i class="fas fa-sort-alpha-down-alt"></i></a>
+    }
+    @if(Model.OrderBy != KeywordOrderBy.StatusAsc){
+    <a href="/Keyword/Index?orderby=StatusAsc" title="Order by status - failed, pending then success"><i class="fas fa-check"></i><i class="fas fa-sort-down"></i></a>
+    }
+    @if(Model.OrderBy == KeywordOrderBy.StatusAsc){
+    <a href="/Keyword/Index?orderby=StatusDesc" title="Order by status - success, pending then failed"><i class="fas fa-check"></i><i class="fas fa-sort-up"></i></a>
+    }
+</section>
 <section id="keywordsList">
     <div class="mb-4">
         @if(Model.Keywords.Count() == 0){

@@ -29,7 +29,7 @@ namespace keywords.Controllers
             _dbContext = dbContext;
         }
 
-        public IActionResult Index(int? page, KeywordOrderBy orderBy = KeywordOrderBy.Status, int fileId = 0)
+        public IActionResult Index(int? page, KeywordOrderBy orderBy = KeywordOrderBy.NameAsc, int fileId = 0)
         {
             var userId = _dbContext.GetUserId(User.Identity.Name);
 
@@ -42,9 +42,15 @@ namespace keywords.Controllers
                 initQuery = initQuery.Where(x => x.FileId == fileId);
             }
 
-            if (orderBy == KeywordOrderBy.Status) // default
+            if (orderBy == KeywordOrderBy.StatusAsc)
             {
                 initQuery = initQuery.OrderBy(x => x.ParsingStatus)
+                    .ThenByDescending(x => x.ParsedDate)
+                    .ThenBy(x => x.Name);
+            }
+            else if (orderBy == KeywordOrderBy.StatusDesc)
+            {
+                initQuery = initQuery.OrderByDescending(x => x.ParsingStatus)
                     .ThenByDescending(x => x.ParsedDate)
                     .ThenBy(x => x.Name);
             }

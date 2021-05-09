@@ -18,7 +18,7 @@ namespace KeywordsApp.Models.Keyword
         {
             get
             {
-                if (OrderBy == KeywordOrderBy.Status)
+                if (OrderBy == KeywordOrderBy.StatusAsc || OrderBy == KeywordOrderBy.StatusDesc)
                     return Keywords.GroupBy(x => x.ParsingStatus.ToString());
                 else
                     return Keywords.GroupBy(x => x.Name.ToLower()[0].ToString());
@@ -29,7 +29,8 @@ namespace KeywordsApp.Models.Keyword
     public enum KeywordOrderBy
     {
         NameAsc = 1,
-        NameDesc = -1,
-        Status = 0
+        NameDesc = 2,
+        StatusAsc = 3,
+        StatusDesc = 4
     }
 }
