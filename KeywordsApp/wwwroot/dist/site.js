@@ -88,8 +88,16 @@ connection.on(
     const url = $('#parsedKeywordsList').data('single-load');
     const container = $('#parsedKeywordsListContainer');
     $.post(url, { keywordId: keywordId }, (data) => {
-      container.children().last().remove();
-      container.prepend(data);
+      const nbrChildren = container.children().length;
+      if (nbrChildren == 0) {
+        container.html(data);
+      } else {
+        container.prepend(data);
+        if (nbrChildren >= 8) {
+          container.children().last().remove();
+        }
+      }
+
       $('#parsedKeywordsListContainer div.card')
         .first()
         .effect('highlight', { color: '#78ff96' }, 1000);
@@ -194,8 +202,15 @@ class UploadForm {
     const url = $('#csvFilesList').data('single-load');
     const container = $('#csvFilesListContainer');
     $.post(url, { fileId: newFileId }, (data) => {
-      container.prepend(data);
-      container.children().last().remove();
+      const nbrChildren = container.children().length;
+      if (nbrChildren == 0) {
+        container.html(data);
+      } else {
+        container.prepend(data);
+        if (nbrChildren >= 8) {
+          container.children().last().remove();
+        }
+      }
       $('#csvFilesListContainer div.card')
         .first()
         .effect('highlight', { color: '#78ff96' }, 1000);
