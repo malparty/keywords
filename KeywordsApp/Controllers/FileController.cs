@@ -67,6 +67,7 @@ namespace keywords.Controllers
             {
                 FileId = x.Id,
                 Name = x.Name,
+                ShowProgressBar = true,
                 ParsedKeywordsCount = x.Keywords.Count(y => y.ParsingStatus == ParsingStatus.Succeed),
                 TotalKeywordsCount = x.Keywords.Count(),
                 CreatedDate = x.CreatedDate
