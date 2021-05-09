@@ -11,19 +11,7 @@ namespace KeywordsApp.Models.Keyword
         public KeywordOrderBy OrderBy { get; set; }
         public int FileId { get; set; }
         public IPagedList<KeywordEntity> Keywords { get; set; }
-        public PagedListRenderOptionsBase PagedListRenderOptions
-        {
-            get
-            {
-                return new X.PagedList.Web.Common.PagedListRenderOptionsBase
-                {
-                    UlElementClasses = new string[] { "pagination" },
-                    LiElementClasses = new string[] { "page-item" },
-                    ActiveLiElementClass = "active",
-                    PageClasses = new string[] { "page-link" }
-                };
-            }
-        }
+        public PagedListOptions PageListOptions { get { return new PagedListOptions(); } }
 
         // based on orderby, group using the right key
         public IEnumerable<IGrouping<string, KeywordEntity>> GroupedByOrderKey

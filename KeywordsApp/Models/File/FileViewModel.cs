@@ -6,9 +6,12 @@ namespace KeywordsApp.Models.File
     {
         public int FileId { get; set; }
         public string Name { get; set; }
+        public bool ShowProgressBar { get; set; }
+
         public DateTime CreatedDate { get; set; }
         public int TotalKeywordsCount { get; set; }
         public int ParsedKeywordsCount { get; set; }
+
         public int ParsedPercent
         {
             get

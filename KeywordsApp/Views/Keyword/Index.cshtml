@@ -27,7 +27,7 @@
     </div>
     @if(Model.Keywords.PageCount > 1){
         <nav class="mt-2 mb-2">
-            @Html.PagedListPager(Model.Keywords, page => Url.Action("Index", new { page, Model.OrderBy }),Model.PagedListRenderOptions)
+            @Html.PagedListPager(Model.Keywords, page => Url.Action("Index", new { page, Model.OrderBy }),Model.PageListOptions.PagedListRenderOptions)
         </nav>
     }
 </section>

@@ -13,6 +13,7 @@ using KeywordsApp.Models.File;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using KeywordsApp.Models.Keyword;
+using X.PagedList;
 
 namespace keywords.Controllers
 {
@@ -42,6 +43,7 @@ namespace keywords.Controllers
                 {
                     FileId = x.Id,
                     Name = x.Name,
+                    ShowProgressBar = true,
                     CreatedDate = x.CreatedDate,
                     TotalKeywordsCount = x.Keywords.Count(),
                     ParsedKeywordsCount = x.Keywords.Where(y => y.ParsingStatus == ParsingStatus.Succeed).Count()
@@ -131,6 +133,36 @@ namespace keywords.Controllers
             uploadFormViewModel.PreviousFileId = fileEntity.Id;
 
             return PartialView("_UploadForm", uploadFormViewModel);
+        }
+
+        public IActionResult Search(int page = 1, string search = null)
+        {
+            var userId = _dbContext.GetUserId(User.Identity.Name);
+
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var query = _dbContext.Files.Where(x => x.CreatedByUserId == userId);
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(x => x.Name.Contains(search));
+            }
+            query = query.OrderByDescending(x => x.CreatedDate).ThenBy(x => x.Name);
+            var model = new FileListViewModel
+            {
+                Search = search,
+            };
+            model.Files = query.Select(x => new FileViewModel
+            {
+                CreatedDate = x.CreatedDate,
+                FileId = x.Id,
+                Name = x.Name,
+                ShowProgressBar = false,
+                ParsedKeywordsCount = x.Keywords.Where(k => k.ParsingStatus == ParsingStatus.Succeed).Count(),
+                TotalKeywordsCount = x.Keywords.Count()
+            }).ToPagedList(page, 20);
+
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
