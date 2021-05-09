@@ -25,7 +25,7 @@ namespace KeywordsApp.HostedServices
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {Time}", DateTime.Now);
-                await _googleParser.ParseAsync(true); // TODO - Define when taking failed and when not!
+                await _googleParser.ParseAsync(false);
                 // No action until current parsing is done
                 while (_googleParser.IsParsing)
                 {
