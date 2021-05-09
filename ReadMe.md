@@ -2,7 +2,7 @@
 
 # Introduction
 
-> Codding challenge proposed by a nice company ~
+Codding challenge proposed by a nice company ~
 
 # Project Setup
 
@@ -87,6 +87,8 @@ _Docker is only used for PosgreSQL db._
 
 ## Build
 
+> **Warning:** Be sure to change DB username/passwords and include your connection string in a safe place (ENV variables or Secret API) before deploying this app!
+
 - Build minified js/css:
 
   ```sh
@@ -117,4 +119,4 @@ dotnet test
 
 ## Github actions
 
-Unit tests will be run automatically at each push (any branch).
+Tests will be run automatically at each push from any branches.
