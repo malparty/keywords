@@ -79,7 +79,7 @@ namespace KeywordsApp.Tests.Keyword
             {
                 var parser = new KeywordParserFake();
                 var result = parser.ParseHtml();
-                Assert.Equal(result.AdWordsCount, 0);
+                Assert.Equal(0, result.AdWordsCount);
             }
             [Fact]
             public void ParseMethod8_CanParseRequestLinkCount_ContainOneAd()
@@ -90,7 +90,7 @@ namespace KeywordsApp.Tests.Keyword
                 parser.RawHtmlContent += "<a data-offer-id=\"133009651\"></a>";
                 parser.RawHtmlContent += "<div data-text-ad=\"1\"></div>";
                 var result = parser.ParseHtml();
-                Assert.Equal(result.AdWordsCount, 2);
+                Assert.Equal(2, result.AdWordsCount);
             }
 
         }
