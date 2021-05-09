@@ -1,0 +1,21 @@
+@model KeywordsApp.Models.File.UploadFormViewModel
+
+<form class="csv-form novalidate" method="post" asp-controller="File" asp-action="UploadForm" enctype="multipart/form-data">
+    <div class="form-validation">
+        <div class="d-flex flex-column flex-lg-row justify-content-lg-between">
+          <div>
+            <label class="btn btn-outline-primary" for="csvFileInput">
+                <i class="fas fa-cloud-upload-alt" ></i>
+                Upload a new CSV file
+            </label> 
+            <span class="csv-form-file-name"></span>
+          </div>
+          
+            <span class="@("alert alert-danger csv-form-error-msg " + (Model != null && !Model.IsValid ? "":"hidden"))" >@Model?.ErrorMsg</span>
+            <span class="@("alert alert-success " + (string.IsNullOrEmpty(Model?.SuccessMsg) ? "hidden":""))" >@Model?.SuccessMsg</span>
+            <div class="alert alert-primary csv-form-uploaded-msg hidden">Your csv file is being verified...</div>
+        </div>
+        <input type="file" id="csvFileInput" name="csvFile" accept=".csv" class="form-control csv-form-file-input hidden" />
+        <input type="hidden" id="previousFileId" value="@Model?.PreviousFileId" />
+    </div>
+</form>

@@ -1,17 +1,27 @@
+using System;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using KeywordsApp.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity.UI.Services;
+
+using KeywordsApp.Data;
+using KeywordsApp.Models;
+using KeywordsApp.Areas.Identity;
+using KeywordsApp.Areas.Identity.Services;
+using KeywordsApp.Models.File;
+using KeywordsApp.Hubs;
+using KeywordsApp.HostedServices;
 
 namespace KeywordsApp
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,6 +33,28 @@ namespace KeywordsApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddIdentity<UserEntity, IdentityRole>(options =>
+             {
+                 options.Password.RequireDigit = true;
+                 options.Password.RequireUppercase = true;
+             })
+            .AddEntityFrameworkStores<KeywordContext>()
+            .AddDefaultTokenProviders()
+            .AddDefaultUI();
+
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
+            services.Configure<UploadFormOptions>(Configuration);
+
+
+            services.AddRazorPages();
+            services.AddSignalR();
+            services.AddHostedService<ParserService>();
+            services.AddSingleton<IGoogleParser, GoogleParser>();
+
+            services.AddScoped<IUserClaimsPrincipalFactory<UserEntity>, UserClaimsPrincipalFactory>();
+
             services.AddDbContext<KeywordContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("KeywordConnection"))
             );
@@ -51,14 +83,18 @@ namespace KeywordsApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=File}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
+                endpoints.MapHub<ParserHub>("/parser");
             });
+
         }
 
         private static void CreateDbIfNotExists(IApplicationBuilder host)

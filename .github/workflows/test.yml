@@ -1,13 +1,14 @@
-name: dotnet package
+name: Run Unit Tests
 
 on: [push]
 
 jobs:
   build:
+    name: Run Unit Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: ["5.0.x"]
+        dotnet-version: ["5.0.202"]
 
     steps:
       - uses: actions/checkout@v2

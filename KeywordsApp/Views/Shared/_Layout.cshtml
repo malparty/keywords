@@ -3,30 +3,62 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - keywords</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/favicon/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/favicon/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/favicon/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/favicon/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="/favicon/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+<link rel="manifest" href="/favicon/manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <title>@ViewData["Title"] - Keywords App</title>
+<environment include="Development">
+    <link rel="stylesheet" href="~/lib/bootstrap-4.6.0-dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/fontawesome-5.15.3/css/fontawesome.css" />
+    <link rel="stylesheet" href="~/lib/jquery-ui-hightlight/jquery-ui.css" />
+    <link rel="stylesheet" href="~/lib/fontawesome-5.15.3/css/solid.css" />
+    <script src="~/dist/csssite.js"></script>
+</environment>
+<environment exclude="Development">
+    <link rel="stylesheet" href="~/lib/bootstrap-4.6.0-dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/fontawesome-5.15.3/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="~/lib/jquery-ui-hightlight/jquery-ui.min.css" />
+    <link rel="stylesheet" href="~/lib/fontawesome-5.15.3/css/solid.min.css" />
+    <script src="~/dist/csssite.min.js"></script>
+</environment>
+
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">keywords</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+        <div class="container">
+            <a class="navbar-brand" href="/">Keywords</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                 <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="File" asp-action="Search">Files</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Keyword" asp-action="Index">Keywords</a>
+                    </li>
+                </ul>
+                <div id="searchForm"></div>
+                    
+                <partial name="_LoginPartial" />    
             </div>
+        </div>
         </nav>
     </header>
     <div class="container">
@@ -34,15 +66,49 @@
             @RenderBody()
         </main>
     </div>
+    <div id="keywordModal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div id="keywordModalContent" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Loading...</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - keywords - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2021 - <a asp-area="" asp-controller="File" asp-action="Index">Keywords</a>
+            <span id="signalRBadge" class="badge badge-light" title="SignalR not connected...">
+                <i class="fas fa-signal"></i>
+            </span>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+
+    <environment include="Development">
+        <script src="~/lib/jquery-3.6.0-dist/jquery-3.6.0.js" defer></script>
+        <script src="~/lib/bootstrap-4.6.0-dist/js/bootstrap.js" defer></script>
+        <script src="~/lib/jquery-ui-hightlight/jquery-ui.js" defer></script>
+        <script src="~/lib/signalr/dist/browser/signalr.js" defer></script>
+        @await RenderSectionAsync("Scripts", required: false)
+        <script src="~/dist/site.js" defer></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/lib/jquery-3.6.0-dist/jquery-3.6.0.min.js" defer></script>
+        <script src="~/lib/bootstrap-4.6.0-dist/js/bootstrap.min.js" defer></script>
+        <script src="~/lib/jquery-ui-hightlight/jquery-ui.min.js" defer></script>
+        <script src="~/lib/signalr/dist/browser/signalr.min.js" defer></script>
+        @await RenderSectionAsync("Scripts", required: false)
+        <script src="~/dist/site.min.js" defer></script>
+    </environment>
+        
 </body>
 </html>
