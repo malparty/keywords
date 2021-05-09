@@ -9,13 +9,14 @@
                 <div class="keyword-body card-body">
                     <div>@keyword.Name</div>
                     <p class="card-text alert-light">
-                        <i class="fas fa-stopwatch"></i> @(keyword.RequestDuration)ms
+                        <small>
+                        <i class="fas fa-stopwatch"></i>&nbsp;@(keyword.RequestDuration)ms
                         <br />
-                        <i class="fas fa-list-ol"></i> @((keyword.TotalThouthandResultsCount*1000).ToString("N0"))
+                        <i class="fas fa-list-ol"></i>&nbsp;@((keyword.TotalThouthandResultsCount*1000).ToString("N0"))
                         <br />
-                        <i class="fas fa-link"></i> @keyword.LinkCount
-                        <br />
-                        <i class="fas fa-ad"></i> @keyword.AdWordsCount
+                        <i class="fas fa-link"></i>&nbsp;@(keyword.LinkCount)&nbsp;&nbsp;
+                        <i class="fas fa-ad"></i>&nbsp;@keyword.AdWordsCount
+                        </small>
                     </p>
                 </div>
                 </div>

@@ -7,7 +7,14 @@
     <partial name="_UploadForm" model=null />
 </section>
 <section id="csvFilesList" data-single-load="/File/Details" >
-    <h2>Last uploaded files:</h2>
+    <div class="row">
+        <div class="col-lg-9 col-md-8 mt-sm-3 mt-md-0">
+            <h2>Last uploaded files:</h2>
+        </div>
+        <div class="col-lg-3 col-md-4 mb-3 mb-md-0">
+            <partial name="_SearchForm" model=string.Empty />
+        </div>
+    </div>
     <div id="csvFilesListContainer" class="row">
         @foreach (var csvFile in Model)
         {

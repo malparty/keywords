@@ -4,23 +4,16 @@
 }
 <section id="fileSearch">
     <div class="row">
-        <div class="col-lg-3 col-md-4">
-            <form method="GET" action="/File/Search">
-                <div class="input-group">
-                    <input class="form-control" type="text" name="search" value="@Model.Search" placeholder="Search among files" aria-label="Search for files" aria-describedby="buttonSearchFile"/>
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit" id="buttonSearchFile"><i class="fas fa-search"></i></button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="col-lg-9 col-md-8 mt-sm-3 mt-md-0">
+        <div class="col-lg-9 col-md-8">
         @if(Model.Search == null){
             <h2>All files</h2>
         }
         else{
             <h2>Searching files for "<small>@Model.Search</small>"</h2>
         }
+        </div>
+        <div class="col-lg-3 col-md-4  mb-3 mb-md-0">
+            <partial name="_SearchForm" model=Model.Search />
         </div>
     </div>
 </section>

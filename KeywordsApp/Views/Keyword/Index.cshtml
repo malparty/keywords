@@ -10,30 +10,38 @@
     </section>
 }
 <section id="keywordListSearchForm">
-    @{
-        var fileArg = Model.FileId > 0 ? string.Format("&fileId={0}",Model.FileId):"";
-    }
-    @if(Model.OrderBy != KeywordOrderBy.NameAsc){
-        <a href="/Keyword/Index?orderby=NameAsc@(fileArg)" title="Order by Name ascending"><i class="fas fa-sort-alpha-down"></i></a>
-    }
-    @if(Model.OrderBy == KeywordOrderBy.NameAsc){
-        <a href="/Keyword/Index?orderby=NameDesc@(fileArg)" title="Order by Name descending"><i class="fas fa-sort-alpha-down-alt"></i></a>
-    }
-    @if(Model.OrderBy != KeywordOrderBy.StatusAsc){
-    <a href="/Keyword/Index?orderby=StatusAsc@(fileArg)" title="Order by status - failed, pending then success"><i class="fas fa-check"></i><i class="fas fa-sort-down"></i></a>
-    }
-    @if(Model.OrderBy == KeywordOrderBy.StatusAsc){
-    <a href="/Keyword/Index?orderby=StatusDesc@(fileArg)" title="Order by status - success, pending then failed"><i class="fas fa-check"></i><i class="fas fa-sort-up"></i></a>
-    }
-    <button class="btn btn-outline-primary ml-2" data-toggle="expandview">
-        <i class="fas fa-eye-slash"></i> Hide results
-    </button>
+    <div class="row">
+        <div class="col-lg-9 col-md-8 mt-sm-3 mt-md-0">
+            @{
+                var fileArg = Model.FileId > 0 ? string.Format("&fileId={0}",Model.FileId):"";
+            }
+            @if(Model.OrderBy != KeywordOrderBy.NameAsc){
+                <a href="/Keyword/Index?orderby=NameAsc@(fileArg)" title="Order by Name ascending"><i class="fas fa-sort-alpha-down"></i></a>
+            }
+            @if(Model.OrderBy == KeywordOrderBy.NameAsc){
+                <a href="/Keyword/Index?orderby=NameDesc@(fileArg)" title="Order by Name descending"><i class="fas fa-sort-alpha-down-alt"></i></a>
+            }
+            @if(Model.OrderBy != KeywordOrderBy.StatusAsc){
+            <a href="/Keyword/Index?orderby=StatusAsc@(fileArg)" title="Order by status - failed, pending then success"><i class="fas fa-check"></i><i class="fas fa-sort-down"></i></a>
+            }
+            @if(Model.OrderBy == KeywordOrderBy.StatusAsc){
+            <a href="/Keyword/Index?orderby=StatusDesc@(fileArg)" title="Order by status - success, pending then failed"><i class="fas fa-check"></i><i class="fas fa-sort-up"></i></a>
+            }
+            <button class="btn btn-outline-primary ml-2" data-toggle="expandview">
+                <i class="fas fa-eye-slash"></i> Hide results
+            </button>
+        </div>
+        <div class="col-lg-3 col-md-4 mb-3 mb-md-0">
+            <partial name="_SearchForm" model=Model />
+        </div>
+    </div>
+    
 </section>
 <section id="keywordsList">
     <div class="mb-4">
         @if(Model.Keywords.Count() == 0){
-            <div class="alert alert-info">You do not have any keyword yet. 
-                To start, <a href="/File/Index" title="Upload a CSV File first"> upload a CSV file here</a>.</div>
+            <div class="alert alert-info mt-3">No maching results. 
+                To parse new keywords, <a href="/File/Index" title="Upload a CSV File first"> upload a CSV file here</a>.</div>
         }
         else {
             @foreach (var group in Model.GroupedByOrderKey)
@@ -47,7 +55,7 @@
     </div>
     @if(Model.Keywords.PageCount > 1){
         <nav class="mt-2 mb-2">
-            @Html.PagedListPager(Model.Keywords, page => Url.Action("Index", new { page, Model.OrderBy }),Model.PageListOptions.PagedListRenderOptions)
+            @Html.PagedListPager(Model.Keywords, page => Url.Action("Index", new { page, Model.OrderBy, Model.Search }),Model.PageListOptions.PagedListRenderOptions)
         </nav>
     }
 </section>

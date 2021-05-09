@@ -1,5 +1,13 @@
 @model IEnumerable<KeywordViewModel>
-<h2>Last parsed keywords:</h2>
+
+    <div class="row">
+        <div class="col-lg-9 col-md-8">
+            <h2>Last parsed keywords:</h2>
+        </div>
+        <div class="col-lg-3 col-md-4 mb-3 mb-md-0">
+            <partial name="_SearchForm" model=null />
+        </div>
+    </div>
 <div id="parsedKeywordsListContainer" class="row">
     @foreach (var keyword in Model)
     {

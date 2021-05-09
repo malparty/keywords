@@ -10,6 +10,7 @@ namespace KeywordsApp.Models.Keyword
     {
         public KeywordOrderBy OrderBy { get; set; }
         public int FileId { get; set; }
+        public string Search { get; set; }
         public IPagedList<KeywordEntity> Keywords { get; set; }
         public PagedListOptions PageListOptions { get { return new PagedListOptions(); } }
 
