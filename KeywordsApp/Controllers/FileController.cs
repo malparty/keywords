@@ -145,7 +145,8 @@ namespace keywords.Controllers
             var query = _dbContext.Files.Where(x => x.CreatedByUserId == userId);
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(x => x.Name.Contains(search));
+                var searchLow = search.ToLower();
+                query = query.Where(x => x.Name.ToLower().Contains(searchLow));
             }
             query = query.OrderByDescending(x => x.CreatedDate).ThenBy(x => x.Name);
             var model = new FileListViewModel
