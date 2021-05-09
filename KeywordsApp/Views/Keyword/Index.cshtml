@@ -10,17 +10,20 @@
     </section>
 }
 <section id="keywordListSearchForm">
+    @{
+        var fileArg = Model.FileId > 0 ? string.Format("&fileId={0}",Model.FileId):"";
+    }
     @if(Model.OrderBy != KeywordOrderBy.NameAsc){
-        <a href="/Keyword/Index?orderby=NameAsc" title="Order by Name ascending"><i class="fas fa-sort-alpha-down"></i></a>
+        <a href="/Keyword/Index?orderby=NameAsc@(fileArg)" title="Order by Name ascending"><i class="fas fa-sort-alpha-down"></i></a>
     }
     @if(Model.OrderBy == KeywordOrderBy.NameAsc){
-        <a href="/Keyword/Index?orderby=NameDesc" title="Order by Name descending"><i class="fas fa-sort-alpha-down-alt"></i></a>
+        <a href="/Keyword/Index?orderby=NameDesc@(fileArg)" title="Order by Name descending"><i class="fas fa-sort-alpha-down-alt"></i></a>
     }
     @if(Model.OrderBy != KeywordOrderBy.StatusAsc){
-    <a href="/Keyword/Index?orderby=StatusAsc" title="Order by status - failed, pending then success"><i class="fas fa-check"></i><i class="fas fa-sort-down"></i></a>
+    <a href="/Keyword/Index?orderby=StatusAsc@(fileArg)" title="Order by status - failed, pending then success"><i class="fas fa-check"></i><i class="fas fa-sort-down"></i></a>
     }
     @if(Model.OrderBy == KeywordOrderBy.StatusAsc){
-    <a href="/Keyword/Index?orderby=StatusDesc" title="Order by status - success, pending then failed"><i class="fas fa-check"></i><i class="fas fa-sort-up"></i></a>
+    <a href="/Keyword/Index?orderby=StatusDesc@(fileArg)" title="Order by status - success, pending then failed"><i class="fas fa-check"></i><i class="fas fa-sort-up"></i></a>
     }
 </section>
 <section id="keywordsList">
