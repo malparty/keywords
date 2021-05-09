@@ -11,7 +11,7 @@
     <div id="csvFilesListContainer" class="row">
         @foreach (var csvFile in Model)
         {
-            @Html.Partial("_Details", csvFile)
+            <partial name="_Details" model=csvFile />
         }
     </div>
     <a href="/File/Search" class="btn btn-primary">All files</a>

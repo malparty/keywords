@@ -3,7 +3,7 @@
 <div id="parsedKeywordsListContainer" class="row">
     @foreach (var keyword in Model)
     {
-        @Html.Partial("_Details",keyword)
+        <partial name="_Details" model=keyword />
     }
 </div>
 <a href="/Keyword/Index" class="btn btn-primary mt-2">All Keywords</a>
