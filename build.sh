@@ -3,5 +3,5 @@ cd ./KeywordsApp/
 cd ./ClientApp/
 npm run build
 cd ..
-dotnet run --launch-profile test
+dotnet build --configuration Release
 read -p 'press enter to continue...'

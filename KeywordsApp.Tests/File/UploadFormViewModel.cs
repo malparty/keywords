@@ -16,7 +16,6 @@ namespace KeywordsApp.Tests.File
         static IConfiguration CONFIG = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json")
                     .Build();
-        private IConfiguration _config;
         public class UploadFormViewModel_ValidateMethod
         {
             private int _maxCsvFileSizeUpload;
