@@ -1,46 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/js/components/keyword-expand.js":
-/*!*********************************************!*\
-  !*** ./src/js/components/keyword-expand.js ***!
-  \*********************************************/
-/***/ (() => {
-
-class KeywordExpand {
-  initLoader = () => {
-    $('button[data-toggle=expandview').click(toggleExpandView);
-  };
-}
-
-toggleExpandView = () => {
-  const isExpanded = $('.keyword-body').first().hasClass('card-body');
-  if (isExpanded) {
-    // Need to close
-    $('.keyword-body').removeClass('card-body');
-    $('.keyword').removeClass('card');
-    $('.keyword .card-text').hide();
-    $('button[data-toggle=expandview').html(
-      '<i class="fas fa-tachometer-alt"></i> Show results'
-    );
-    return;
-  }
-  // Need to expand
-  $('.keyword-body').addClass('card-body');
-  $('.keyword').addClass('card');
-  $('.keyword .card-text').show();
-  $('button[data-toggle=expandview').html(
-    '<i class="fas fa-eye-slash"></i> Hide results'
-  );
-};
-
-$(function () {
-  new KeywordExpand().initLoader();
-});
-
-
-/***/ }),
-
 /***/ "./src/js/components/loader-ajax.js":
 /*!******************************************!*\
   !*** ./src/js/components/loader-ajax.js ***!
@@ -306,9 +266,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_js_components_loader_ajax_js__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../js/screens/uploadForm.js */ "./src/js/screens/uploadForm.js");
 /* harmony import */ var _js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_js_screens_uploadForm_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _js_components_keyword_expand_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../js/components/keyword-expand.js */ "./src/js/components/keyword-expand.js");
-/* harmony import */ var _js_components_keyword_expand_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_js_components_keyword_expand_js__WEBPACK_IMPORTED_MODULE_3__);
-
 
 
 
