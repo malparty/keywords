@@ -29,7 +29,7 @@ namespace keywords.Controllers
             _dbContext = dbContext;
         }
 
-        public IActionResult Index(int? page, KeywordOrderBy orderBy = KeywordOrderBy.NameAsc, int fileId = 0, string search = "")
+        public IActionResult Index(int? page, KeywordOrderBy orderBy = KeywordOrderBy.NameAsc, int fileId = 0, string search = "", bool showResults = true)
         {
             var userId = _dbContext.GetUserId(User.Identity.Name);
 
@@ -80,7 +80,8 @@ namespace keywords.Controllers
                 OrderBy = orderBy,
                 Keywords = initQuery.ToPagedList(page ?? 1, NBR_KEYWORD_PER_PAGE),
                 FileId = fileId,
-                Search = search
+                Search = search,
+                IsShowResults = showResults
             };
 
             return View(model);

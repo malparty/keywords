@@ -13,7 +13,7 @@ namespace KeywordsApp.Models.Keyword
         public int AdWordsCount { get; set; }
         public int LinkCount { get; set; }
 
-        public int TotalThouthandResultsCount { get; set; }
+        public double TotalThouthandResultsCount { get; set; }
         public int RequestDuration { get; set; }
     }
 

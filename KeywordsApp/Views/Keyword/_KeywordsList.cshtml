@@ -1,27 +1,36 @@
 @model IEnumerable<KeywordsApp.Models.Keyword.KeywordEntity>
-
+@{
+    var isShowResults = (bool)ViewBag.IsShowResults;
+}
 <div class="container">
     <div class="row">
         @foreach (var keyword in Model)
         {
             <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                <div class="keyword card mb-2">
-                <div class="keyword-body card-body">
-                    <div>@keyword.Name</div>
-                    <p class="card-text alert-light">
-                        <small>
-                            <i class="fas fa-stopwatch"></i>&nbsp;@(keyword.RequestDuration)ms
-                            <br />
-                            <i class="fas fa-list-ol"></i>&nbsp;@((keyword.TotalThouthandResultsCount*1000).ToString("N0"))
-                            <br />
-                            <i class="fas fa-link"></i>&nbsp;@(keyword.LinkCount)&nbsp;&nbsp;
-                            <i class="fas fa-ad"></i>&nbsp;@keyword.AdWordsCount
-                            <br />
-                            <a href="/Keyword/Cached?keywordId=@keyword.Id" target="_blank"><i class="fas fa-external-link-alt"></i>&nbsp;Cached page</a>
-                        </small>
-                    </p>
-                </div>
-                </div>
+                @if(isShowResults){
+                    <div class="keyword card mb-2">
+                        <div class="keyword-body card-body">
+                            <div>@keyword.Name</div>
+                            <p class="card-text alert-light">
+                                <small>
+                                    <i class="fas fa-stopwatch"></i>&nbsp;@(keyword.RequestDuration)ms
+                                    <br />
+                                    <i class="fas fa-list-ol"></i>&nbsp;@((keyword.TotalThouthandResultsCount*1000).ToString("N0"))
+                                    <br />
+                                    <i class="fas fa-link"></i>&nbsp;@(keyword.LinkCount)&nbsp;&nbsp;
+                                    <i class="fas fa-ad"></i>&nbsp;@keyword.AdWordsCount
+                                    <br />
+                                    <a href="/Keyword/Cached?keywordId=@keyword.Id" target="_blank"><i class="fas fa-external-link-alt"></i>&nbsp;Cached page</a>
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                }
+                else{
+                    <div>
+                        @keyword.Name
+                    </div>
+                }
             </div>
         }
     </div>
