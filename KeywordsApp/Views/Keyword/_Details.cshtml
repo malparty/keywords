@@ -3,11 +3,11 @@
     <div class="card mb-2">
         <div class="card-body">
             <h5 class="card-title">@Model.Name</h5>
-            <h6 class="card-subtitle mb-2 text-muted">
+            <p class="card-subtitle mb-2 text-muted">
                 <a href="/Keyword/Index?fileId=@Model.FileId" title="View keywords from the same file">
-                    <i class="fas fa-external-link-alt"></i></a>
+                    <i class="fas fa-file-csv"></i></a>
                 @Model.FileName
-            </h6>
+            </p>
             @if(Model.ParsingStatus == ParsingStatus.Pending){
                 <span>
                     <i class="fas fa-hourglass-start"></i> 
@@ -39,7 +39,7 @@
                 <br />
                 <b>AdWords:</b> @Model.AdWordsCount
             </p>
-            <a href="/Keyword/Cached?keywordId=@Model.KeywordId" target="_blank" class="card-link">View cached page</a>
+            <a href="/Keyword/Cached?keywordId=@Model.KeywordId" target="_blank" class="card-link"><i class="fas fa-external-link-alt"></i>&nbsp;View cached page</a>
         </div>
     </div>
 </div>
