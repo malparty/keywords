@@ -153,7 +153,7 @@ namespace KeywordsApp.Models.Keyword
                 _keywordResult.ErrorMsg = string.Format("Cannot parse resultCount to double from {0}", resultCount);
                 return;
             }
-            _keywordResult.TotalThouthandResultsCount = (int)(resultCount / 1000);
+            _keywordResult.TotalThouthandResultsCount = resultCount / 1000;
         }
     }
 
