@@ -1,6 +1,7 @@
 ﻿@model KeywordListViewModel
 @{
     ViewData["Title"] = "List";
+    ViewBag.IsShowResults = Model.IsShowResults;
 }
 @if(Model.FileId > 0){
     <section id="keywordsListIntro" data-load-ajax="/File/HeaderIntro?fileId=@Model.FileId">
@@ -15,22 +16,33 @@
             @{
                 var formArg = Model.FileId > 0 ? string.Format("&fileId={0}",Model.FileId):"";
                 formArg += string.IsNullOrEmpty(Model.Search) ? "" :string.Format("&search={0}",Model.Search);
+                var orderByArg = formArg + (Model.IsShowResults ? "":"&showResults=false");
+                var expandArg = string.Format("/Keyword/Index?orderby={0}{1}",Model.OrderBy, formArg);
+                expandArg += Model.IsShowResults ? "&showResults=false" : "";
             }
             @if(Model.OrderBy != KeywordOrderBy.NameAsc){
-                <a href="/Keyword/Index?orderby=NameAsc@(formArg)" title="Order by Name ascending"><i class="fas fa-sort-alpha-down"></i></a>
+                <a href="/Keyword/Index?orderby=NameAsc@(orderByArg)" title="Order by Name ascending"><i class="fas fa-sort-alpha-down"></i></a>
             }
             @if(Model.OrderBy == KeywordOrderBy.NameAsc){
-                <a href="/Keyword/Index?orderby=NameDesc@(formArg)" title="Order by Name descending"><i class="fas fa-sort-alpha-down-alt"></i></a>
+                <a href="/Keyword/Index?orderby=NameDesc@(orderByArg)" title="Order by Name descending"><i class="fas fa-sort-alpha-down-alt"></i></a>
             }
             @if(Model.OrderBy != KeywordOrderBy.StatusAsc){
-            <a href="/Keyword/Index?orderby=StatusAsc@(formArg)" title="Order by status - failed, pending then success"><i class="fas fa-check"></i><i class="fas fa-sort-down"></i></a>
+                <a href="/Keyword/Index?orderby=StatusAsc@(orderByArg)" title="Order by status - failed, pending then success"><i class="fas fa-check"></i><i class="fas fa-sort-down"></i></a>
             }
             @if(Model.OrderBy == KeywordOrderBy.StatusAsc){
-            <a href="/Keyword/Index?orderby=StatusDesc@(formArg)" title="Order by status - success, pending then failed"><i class="fas fa-check"></i><i class="fas fa-sort-up"></i></a>
+                <a href="/Keyword/Index?orderby=StatusDesc@(orderByArg)" title="Order by status - success, pending then failed"><i class="fas fa-check"></i><i class="fas fa-sort-up"></i></a>
             }
-            <button class="btn btn-outline-primary ml-2" data-toggle="expandview">
-                <i class="fas fa-eye-slash"></i> Hide results
-            </button>
+            @if(Model.IsShowResults){
+                <a href="@expandArg" class="btn btn-outline-primary ml-2" >
+                        <i class="fas fa-eye-slash"></i> Hide results
+                </a>
+            }
+            else{
+                <a href="@expandArg" class="btn btn-outline-primary ml-2" >
+                    <i class="fas fa-tachometer-alt"></i> Show results
+                </a>
+            }
+
         </div>
         <div class="col-lg-3 col-md-4 mb-3 mb-md-0">
             <partial name="_SearchForm" model=Model />
@@ -56,7 +68,7 @@
     </div>
     @if(Model.Keywords.PageCount > 1){
         <nav class="mt-2 mb-2">
-            @Html.PagedListPager(Model.Keywords, page => Url.Action("Index", new { page, Model.OrderBy, Model.Search }),Model.PageListOptions.PagedListRenderOptions)
+            @Html.PagedListPager(Model.Keywords, page => Url.Action("Index", new { page, Model.OrderBy, Model.Search, showResults = Model.IsShowResults }),Model.PageListOptions.PagedListRenderOptions)
         </nav>
     }
 </section>
