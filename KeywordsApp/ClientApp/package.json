@@ -1,12 +1,7 @@
 {
   "name": "clientapp",
   "description": "Build JS and CSS bundles.",
-  "dependencies": {
-    "bootstrap": "^4.6.0",
-    "jquery": "^3.6.0",
-    "jquery-validation": "^1.19.3",
-    "jquery-validation-unobtrusive": "^3.2.12"
-  },
+  "dependencies": {},
   "devDependencies": {
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.0",
