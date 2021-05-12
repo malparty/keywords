@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using KeywordsApp.Models;
 using KeywordsApp.Data;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using KeywordsApp.Models.File;
 using Microsoft.Extensions.Configuration;
@@ -15,10 +13,9 @@ using System.Data;
 using KeywordsApp.Models.Keyword;
 using X.PagedList;
 
-namespace keywords.Controllers
+namespace KeywordsApp.Controllers
 {
-    [Authorize]
-    public class FileController : Controller
+    public class FileController : AuthorizedController
     {
         private readonly ILogger<FileController> _logger;
         private readonly KeywordContext _dbContext;
@@ -33,12 +30,7 @@ namespace keywords.Controllers
 
         public IActionResult Index()
         {
-            var userId = _dbContext.GetUserId(User.Identity.Name);
-
-            if (string.IsNullOrEmpty(userId))
-                return NotFound();
-
-            var model = _dbContext.Files.Where(x => x.CreatedByUserId == userId)
+            var model = _dbContext.Files.Where(x => x.CreatedByUserId == UserId)
                 .Select(x => new FileViewModel
                 {
                     FileId = x.Id,
@@ -57,12 +49,7 @@ namespace keywords.Controllers
         [HttpPost]
         public IActionResult Details(int fileId)
         {
-            var userId = _dbContext.GetUserId(User.Identity.Name);
-
-            if (string.IsNullOrEmpty(userId))
-                return NotFound();
-
-            var model = _dbContext.Files.Where(x => x.CreatedByUserId == userId && x.Id == fileId)
+            var model = _dbContext.Files.Where(x => x.CreatedByUserId == UserId && x.Id == fileId)
             .Select(x => new FileViewModel
             {
                 FileId = x.Id,
@@ -82,12 +69,7 @@ namespace keywords.Controllers
 
         public IActionResult HeaderIntro(int fileId = 0)
         {
-            var userId = _dbContext.GetUserId(User.Identity.Name);
-
-            if (fileId <= 0 || string.IsNullOrEmpty(userId))
-                return NotFound();
-
-            var model = _dbContext.Files.FirstOrDefault(x => x.CreatedByUserId == userId && x.Id == fileId);
+            var model = _dbContext.Files.FirstOrDefault(x => x.CreatedByUserId == UserId && x.Id == fileId);
 
             if (model == null)
                 return NotFound();
@@ -107,12 +89,7 @@ namespace keywords.Controllers
             if (!uploadFormViewModel.IsValid)
                 return PartialView("_UploadForm", uploadFormViewModel);
 
-            var userId = _dbContext.GetUserId(User.Identity.Name);
-
-            if (string.IsNullOrEmpty(userId))
-                return NotFound();
-
-            var fileEntity = new FileEntity(userId, uploadFormViewModel.Keywords, uploadFormViewModel.FileName);
+            var fileEntity = new FileEntity(UserId, uploadFormViewModel.Keywords, uploadFormViewModel.FileName);
             _dbContext.Files.Add(fileEntity);
             try
             {
@@ -121,12 +98,12 @@ namespace keywords.Controllers
             }
             catch (DataException e)
             {
-                _logger.LogError(0, e, "DataBase cannot persist a new File for user: " + userId);
+                _logger.LogError(0, e, "DataBase cannot persist a new File for user: " + UserId);
                 uploadFormViewModel.ErrorMsg = "The file could not be saved. Please try again.";
             }
             catch (Exception e)
             {
-                _logger.LogError(0, e, "Db Context failed to persist File for user: " + userId);
+                _logger.LogError(0, e, "Db Context failed to persist File for user: " + UserId);
                 uploadFormViewModel.ErrorMsg = "The file could not be saved. Please try again.";
             }
 
@@ -138,12 +115,7 @@ namespace keywords.Controllers
 
         public IActionResult Search(int page = 1, string search = null)
         {
-            var userId = _dbContext.GetUserId(User.Identity.Name);
-
-            if (string.IsNullOrEmpty(userId))
-                return NotFound();
-
-            var query = _dbContext.Files.Where(x => x.CreatedByUserId == userId);
+            var query = _dbContext.Files.Where(x => x.CreatedByUserId == UserId);
             if (!string.IsNullOrEmpty(search))
             {
                 var searchLow = search.ToLower();
