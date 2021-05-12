@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,10 +14,9 @@ using System.Data;
 using KeywordsApp.Models.Keyword;
 using X.PagedList;
 
-namespace keywords.Controllers
+namespace KeywordsApp.Controllers
 {
-    [Authorize]
-    public class FileController : Controller
+    public class FileController : AuthorizedController
     {
         private readonly ILogger<FileController> _logger;
         private readonly KeywordContext _dbContext;

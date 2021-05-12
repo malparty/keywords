@@ -1,23 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using KeywordsApp.Models;
 using KeywordsApp.Data;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using KeywordsApp.Models.File;
 using System.Data;
 using X.PagedList;
 using KeywordsApp.Models.Keyword;
 
-namespace keywords.Controllers
+namespace KeywordsApp.Controllers
 {
-    [Authorize]
-    public class KeywordController : Controller
+    public class KeywordController : AuthorizedController
     {
         private readonly ILogger<FileController> _logger;
         private readonly KeywordContext _dbContext;
