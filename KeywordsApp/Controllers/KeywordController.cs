@@ -24,12 +24,7 @@ namespace KeywordsApp.Controllers
 
         public IActionResult Index(int? page, KeywordOrderBy orderBy = KeywordOrderBy.NameAsc, int fileId = 0, string search = "", bool showResults = true)
         {
-            var userId = _dbContext.GetUserId(User.Identity.Name);
-
-            if (string.IsNullOrEmpty(userId))
-                return NotFound();
-
-            var initQuery = _dbContext.Keywords.Where(x => x.File.CreatedByUserId == userId);
+            var initQuery = _dbContext.Keywords.Where(x => x.File.CreatedByUserId == UserId);
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -82,12 +77,7 @@ namespace KeywordsApp.Controllers
 
         public async Task<IActionResult> LastParsed()
         {
-            var userId = _dbContext.GetUserId(User.Identity.Name);
-
-            if (string.IsNullOrEmpty(userId))
-                return NotFound();
-
-            var model = await _dbContext.Keywords.Where(x => x.File.CreatedByUserId == userId && x.ParsingStatus == ParsingStatus.Succeed)
+            var model = await _dbContext.Keywords.Where(x => x.File.CreatedByUserId == UserId && x.ParsingStatus == ParsingStatus.Succeed)
             .OrderByDescending(x => x.ParsedDate)
             .Take(8)
             .Select(x => new KeywordViewModel
@@ -110,12 +100,7 @@ namespace KeywordsApp.Controllers
         [HttpPost]
         public IActionResult Details(int keywordId)
         {
-            var userId = _dbContext.GetUserId(User.Identity.Name);
-
-            if (string.IsNullOrEmpty(userId))
-                return NotFound();
-
-            var model = _dbContext.Keywords.Where(x => x.File.CreatedByUserId == userId && x.Id == keywordId)
+            var model = _dbContext.Keywords.Where(x => x.File.CreatedByUserId == UserId && x.Id == keywordId)
             .Select(x => new KeywordViewModel
             {
                 KeywordId = x.Id,
@@ -138,12 +123,7 @@ namespace KeywordsApp.Controllers
 
         public IActionResult Cached(int keywordId)
         {
-            var userId = _dbContext.GetUserId(User.Identity.Name);
-
-            if (string.IsNullOrEmpty(userId))
-                return NotFound();
-
-            var model = _dbContext.Keywords.Where(x => x.File.CreatedByUserId == userId && x.Id == keywordId)
+            var model = _dbContext.Keywords.Where(x => x.File.CreatedByUserId == UserId && x.Id == keywordId)
             .FirstOrDefault();
             if (model == null)
                 return NotFound();
