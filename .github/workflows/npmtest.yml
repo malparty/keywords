@@ -1,0 +1,27 @@
+name: NpmTest
+
+on: [push]
+
+jobs:
+  build:
+    name: NpmTest
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: ["5.0.202"]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+        node-version: "14.15.4"
+
+      - name: Move into clientApp folder
+        run: cd ./KeywordApps/ClientApp/
+
+      - name: npm install
+        run: npm i
+
+      - name: Run Start
+        run: npm run start
