@@ -8,7 +8,9 @@ module.exports = {
   mode: isDevelopment ? 'development' : 'production',
   entry: {
     site: './src/js/site.js',
-    csssite: './src/css/site.js',
+    vendor: './src/js/vendor.js',
+    vendorcss: './src/css/vendor.scss',
+    sitecss: './src/css/site.scss',
   },
   output: {
     filename: isDevelopment ? '[name].js' : '[name].min.js',
@@ -20,7 +22,31 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      {
+        test: /\.(scss)$/,
+        use: [
+          {
+            loader: 'style-loader', // inject CSS to page
+          },
+          {
+            loader: 'css-loader', // translates CSS into CommonJS modules
+          },
+          {
+            loader: 'postcss-loader', // Run post css actions
+            options: {
+              postcssOptions: {
+                plugins: function () {
+                  // post css plugins, can be exported to postcss.config.js
+                  return [require('precss'), require('autoprefixer')];
+                },
+              },
+            },
+          },
+          {
+            loader: 'sass-loader', // compiles Sass to CSS
+          },
+        ],
+      },
       { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, use: ['file-loader'] },
       {
         test: /\.(woff|woff2)$/,
