@@ -18,7 +18,7 @@ jobs:
           node-version: "14.15.4"
 
       - name: Move into clientApp folder
-        run: cd ./KeywordApps/ClientApp/
+        run: cd ./KeywordsApp/ClientApp/
 
       - name: npm install
         run: npm i
