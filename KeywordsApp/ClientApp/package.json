@@ -1,6 +1,9 @@
 {
   "name": "clientapp",
   "description": "Build JS and CSS bundles.",
+  "engines": {
+    "node": "14.15.4"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/malparty/keywords.git"
