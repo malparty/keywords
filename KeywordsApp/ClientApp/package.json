@@ -1,6 +1,11 @@
 {
   "name": "clientapp",
   "description": "Build JS and CSS bundles.",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/malparty/keywords.git"
+  },
+  "license": "UNLICENSED",
   "dependencies": {},
   "devDependencies": {
     "cross-env": "^7.0.3",
