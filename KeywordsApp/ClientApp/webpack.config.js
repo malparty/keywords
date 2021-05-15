@@ -20,7 +20,6 @@ module.exports = {
     sourceMapFilename: '[name].min.map',
     chunkFilename: '[id].min.js',
   },
-  devtool: 'eval-source-map',
   optimization: {
     minimize: !isDevelopment,
   },
