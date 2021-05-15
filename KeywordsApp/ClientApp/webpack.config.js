@@ -31,6 +31,7 @@ module.exports = {
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
+      signalR: '@microsoft/signalr',
     }),
   ],
   externals: {
