@@ -23,3 +23,8 @@
 @import "~bootstrap/scss/alert";
 @import "~bootstrap/scss/forms";
 @import "~bootstrap/scss/input-group";
+
+// 5. Font Awesome
+$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+@import "~@fortawesome/fontawesome-free/scss/solid";
