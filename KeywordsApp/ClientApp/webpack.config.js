@@ -32,11 +32,9 @@ module.exports = {
       $: 'jquery',
       jQuery: 'jquery',
       signalR: '@microsoft/signalr',
+      validate: 'jquery-validation',
     }),
   ],
-  externals: {
-    jquery: 'jQuery',
-  },
   module: {
     rules: [
       {
