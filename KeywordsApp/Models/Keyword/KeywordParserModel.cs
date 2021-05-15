@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
@@ -56,10 +55,10 @@ namespace KeywordsApp.Models.Keyword
         private void ParseRequestAdWordsCount()
         {
             var countMerchantAds = BodyNode.SelectNodes("//a")
-            .Select(x => x.GetAttributeValue("data-offer-id", ""))
-            .Where(x => !string.IsNullOrEmpty(x))
-            .Distinct()
-            .Count();
+                .Select(x => x.GetAttributeValue("data-offer-id", ""))
+                .Where(x => !string.IsNullOrEmpty(x))
+                .Distinct()
+                .Count();
             var countBasicAds = BodyNode.SelectNodes("//div[@data-text-ad=\"1\"]")?.Count ?? 0;
 
             _keywordResult.AdWordsCount = countMerchantAds + countBasicAds;
