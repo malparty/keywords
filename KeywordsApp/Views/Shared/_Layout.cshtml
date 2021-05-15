@@ -21,18 +21,18 @@
 <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <title>@ViewData["Title"] - Keywords App</title>
 <environment include="Development">
-    <link rel="stylesheet" href="~/lib/bootstrap-4.6.0-dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/dist/vendorcss.css" />
     <link rel="stylesheet" href="~/lib/fontawesome-5.15.3/css/fontawesome.css" />
     <link rel="stylesheet" href="~/lib/jquery-ui-hightlight/jquery-ui.css" />
     <link rel="stylesheet" href="~/lib/fontawesome-5.15.3/css/solid.css" />
-    <script src="~/dist/csssite.js"></script>
+    <link rel="stylesheet" href="~/dist/sitecss.css" />
 </environment>
 <environment exclude="Development">
-    <link rel="stylesheet" href="~/lib/bootstrap-4.6.0-dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/dist/vendorcss.min.css" />
     <link rel="stylesheet" href="~/lib/fontawesome-5.15.3/css/fontawesome.min.css" />
     <link rel="stylesheet" href="~/lib/jquery-ui-hightlight/jquery-ui.min.css" />
     <link rel="stylesheet" href="~/lib/fontawesome-5.15.3/css/solid.min.css" />
-    <script src="~/dist/csssite.min.js"></script>
+    <link rel="stylesheet" href="~/dist/sitecss.min.css" />
 </environment>
 
 </head>
@@ -95,7 +95,7 @@
 
     <environment include="Development">
         <script src="~/lib/jquery-3.6.0-dist/jquery-3.6.0.js" defer></script>
-        <script src="~/lib/bootstrap-4.6.0-dist/js/bootstrap.js" defer></script>
+        <script src="~/dist/vendor.js" defer></script>
         <script src="~/lib/jquery-ui-hightlight/jquery-ui.js" defer></script>
         <script src="~/lib/signalr/dist/browser/signalr.js" defer></script>
         @await RenderSectionAsync("Scripts", required: false)
@@ -103,7 +103,7 @@
     </environment>
     <environment exclude="Development">
         <script src="~/lib/jquery-3.6.0-dist/jquery-3.6.0.min.js" defer></script>
-        <script src="~/lib/bootstrap-4.6.0-dist/js/bootstrap.min.js" defer></script>
+        <script src="~/dist/vendor.min.js" defer></script>
         <script src="~/lib/jquery-ui-hightlight/jquery-ui.min.js" defer></script>
         <script src="~/lib/signalr/dist/browser/signalr.min.js" defer></script>
         @await RenderSectionAsync("Scripts", required: false)
