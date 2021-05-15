@@ -1,4 +1,6 @@
 const path = require('path');
+var webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -8,19 +10,60 @@ module.exports = {
   mode: isDevelopment ? 'development' : 'production',
   entry: {
     site: './src/js/site.js',
-    csssite: './src/css/site.js',
+    vendor: './src/js/vendor.js',
+    vendorcss: './src/css/vendor.scss',
+    sitecss: './src/css/site.scss',
   },
   output: {
-    filename: isDevelopment ? '[name].js' : '[name].min.js',
     path: path.resolve(__dirname, '..', 'wwwroot', 'dist'),
+    filename: isDevelopment ? '[name].js' : '[name].min.js',
+    sourceMapFilename: '[name].min.map',
+    chunkFilename: '[id].min.js',
   },
-  devtool: 'source-map',
   optimization: {
     minimize: !isDevelopment,
   },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: isDevelopment ? '[name].css' : '[name].min.css',
+      chunkFilename: isDevelopment ? '[id].css' : '[id].min.css',
+    }),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': "jquery'",
+      'window.$': 'jquery',
+      signalR: '@microsoft/signalr',
+      validate: 'jquery-validation',
+    }),
+  ],
   module: {
     rules: [
-      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      {
+        test: /\.(scss)$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+          },
+          {
+            loader: 'css-loader', // translates CSS into CommonJS modules
+          },
+          {
+            loader: 'postcss-loader', // Run post css actions
+            options: {
+              postcssOptions: {
+                plugins: function () {
+                  // post css plugins, can be exported to postcss.config.js
+                  return [require('precss'), require('autoprefixer')];
+                },
+              },
+            },
+          },
+          {
+            loader: 'sass-loader', // compiles Sass to CSS
+          },
+        ],
+      },
       { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, use: ['file-loader'] },
       {
         test: /\.(woff|woff2)$/,
