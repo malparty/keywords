@@ -1,4 +1,5 @@
-'use strict';
+import $ from 'jquery';
+const signalR = require('@microsoft/signalr');
 
 var connection = new signalR.HubConnectionBuilder().withUrl('/parser').build();
 
