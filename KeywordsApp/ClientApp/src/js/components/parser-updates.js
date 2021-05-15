@@ -1,4 +1,4 @@
-'use strict';
+import $ from 'jquery';
 
 var connection = new signalR.HubConnectionBuilder().withUrl('/parser').build();
 

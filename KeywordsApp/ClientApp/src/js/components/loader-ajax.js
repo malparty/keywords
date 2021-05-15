@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 /// SectionDataLoader
 /// Enable to load section content from ajax query
 /// <section data-load-ajax="#URL">#LOADING MSG</section>

@@ -1,4 +1,5 @@
 const path = require('path');
+var webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -28,7 +29,14 @@ module.exports = {
       filename: isDevelopment ? '[name].css' : '[name].min.css',
       chunkFilename: isDevelopment ? '[id].css' : '[id].min.css',
     }),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+    }),
   ],
+  externals: {
+    jquery: 'jQuery',
+  },
   module: {
     rules: [
       {
