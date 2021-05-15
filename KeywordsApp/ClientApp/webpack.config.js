@@ -1,4 +1,5 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -13,20 +14,28 @@ module.exports = {
     sitecss: './src/css/site.scss',
   },
   output: {
-    filename: isDevelopment ? '[name].js' : '[name].min.js',
     path: path.resolve(__dirname, '..', 'wwwroot', 'dist'),
+    filename: isDevelopment ? '[name].js' : '[name].min.js',
+    sourceMapFilename: '[name].min.map',
+    chunkFilename: '[id].min.js',
   },
-  devtool: 'source-map',
+  devtool: 'eval-source-map',
   optimization: {
     minimize: !isDevelopment,
   },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: isDevelopment ? '[name].css' : '[name].min.css',
+      chunkFilename: isDevelopment ? '[id].css' : '[id].min.css',
+    }),
+  ],
   module: {
     rules: [
       {
         test: /\.(scss)$/,
         use: [
           {
-            loader: 'style-loader', // inject CSS to page
+            loader: MiniCssExtractPlugin.loader,
           },
           {
             loader: 'css-loader', // translates CSS into CommonJS modules
