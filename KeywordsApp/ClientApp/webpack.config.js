@@ -31,6 +31,8 @@ module.exports = {
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
+      'window.jQuery': "jquery'",
+      'window.$': 'jquery',
       signalR: '@microsoft/signalr',
       validate: 'jquery-validation',
     }),
