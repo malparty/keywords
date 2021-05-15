@@ -79,9 +79,14 @@ namespace KeywordsApp.HostedServices
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<KeywordContext>();
                 percent = dbContext.Files.Where(x => x.Id == keyword.FileId)
-                    .Select(x =>
-                        (100 * (x.Keywords.Where(k => k.ParsingStatus == ParsingStatus.Succeed).Count())) / x.Keywords.Count())
-                        .FirstOrDefault();
+                    .Select(
+                        x => (
+                            100 * (
+                                x.Keywords.Where(k => k.ParsingStatus == ParsingStatus.Succeed).Count()
+                            )
+                        ) / x.Keywords.Count()
+                    )
+                    .FirstOrDefault();
             }
 
             var status = string.IsNullOrEmpty(errorMsg) ? "success" : "fail";
@@ -222,13 +227,16 @@ namespace KeywordsApp.HostedServices
                 || (includeFailed
                     ? x.ParsingStatus == ParsingStatus.Failed
                     : false));
-                pendingKeywords = query.Select(x => new KeywordParserModel
-                {
-                    KeywordId = x.Id,
-                    Name = x.Name,
-                    UserId = x.File.CreatedByUserId,
-                    FileId = x.FileId
-                }).ToList();
+                pendingKeywords = query.Select(
+                    x => new KeywordParserModel
+                    {
+                        KeywordId = x.Id,
+                        Name = x.Name,
+                        UserId = x.File.CreatedByUserId,
+                        FileId = x.FileId
+                    }
+                )
+                .ToList();
             }
             return pendingKeywords;
         }

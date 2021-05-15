@@ -77,23 +77,26 @@ namespace KeywordsApp.Controllers
 
         public async Task<IActionResult> LastParsed()
         {
-            var model = await _dbContext.Keywords.Where(x => x.File.CreatedByUserId == UserId && x.ParsingStatus == ParsingStatus.Succeed)
-            .OrderByDescending(x => x.ParsedDate)
-            .Take(8)
-            .Select(x => new KeywordViewModel
-            {
-                KeywordId = x.Id,
-                Name = x.Name,
-                FileName = x.File.Name,
-                AdWordsCount = x.AdWordsCount,
-                LinkCount = x.LinkCount,
-                RequestDuration = x.RequestDuration,
-                TotalThouthandResultsCount = x.TotalThouthandResultsCount,
-                FileId = x.FileId,
-                ParsedDate = x.ParsedDate,
-                ParsingStatus = x.ParsingStatus
-            })
-            .ToListAsync();
+            var model = await _dbContext.Keywords
+                .Where(x => x.File.CreatedByUserId == UserId && x.ParsingStatus == ParsingStatus.Succeed)
+                .OrderByDescending(x => x.ParsedDate)
+                .Take(8)
+                .Select(
+                    x => new KeywordViewModel
+                    {
+                        KeywordId = x.Id,
+                        Name = x.Name,
+                        FileName = x.File.Name,
+                        AdWordsCount = x.AdWordsCount,
+                        LinkCount = x.LinkCount,
+                        RequestDuration = x.RequestDuration,
+                        TotalThouthandResultsCount = x.TotalThouthandResultsCount,
+                        FileId = x.FileId,
+                        ParsedDate = x.ParsedDate,
+                        ParsingStatus = x.ParsingStatus
+                    }
+                )
+                .ToListAsync();
             return PartialView("_LastParsed", model);
         }
 
@@ -101,20 +104,22 @@ namespace KeywordsApp.Controllers
         public IActionResult Details(int keywordId)
         {
             var model = _dbContext.Keywords.Where(x => x.File.CreatedByUserId == UserId && x.Id == keywordId)
-            .Select(x => new KeywordViewModel
-            {
-                KeywordId = x.Id,
-                Name = x.Name,
-                FileName = x.File.Name,
-                AdWordsCount = x.AdWordsCount,
-                LinkCount = x.LinkCount,
-                RequestDuration = x.RequestDuration,
-                TotalThouthandResultsCount = x.TotalThouthandResultsCount,
-                FileId = x.FileId,
-                ParsedDate = x.ParsedDate,
-                ParsingStatus = x.ParsingStatus
-            })
-            .FirstOrDefault();
+                .Select(
+                    x => new KeywordViewModel
+                    {
+                        KeywordId = x.Id,
+                        Name = x.Name,
+                        FileName = x.File.Name,
+                        AdWordsCount = x.AdWordsCount,
+                        LinkCount = x.LinkCount,
+                        RequestDuration = x.RequestDuration,
+                        TotalThouthandResultsCount = x.TotalThouthandResultsCount,
+                        FileId = x.FileId,
+                        ParsedDate = x.ParsedDate,
+                        ParsingStatus = x.ParsingStatus
+                    }
+                )
+                .FirstOrDefault();
             if (model == null)
                 return NotFound();
 
