@@ -94,6 +94,11 @@ namespace KeywordsApp.HostedServices
             {
                 // Get Html Content
                 keyword.RawHtmlContent = await QueryHtmlContentAsync(keyword);
+                if (string.IsNullOrEmpty(keyword.RawHtmlContent))
+                {
+                    await MarkKeywordAsFailedAsync(keyword.KeywordId);
+                    return "Could not load HTML content from the search query.";
+                }
                 // Test & Parse Html Content
                 var parsingResults = keyword.ParseHtml();
                 if (!parsingResults.IsValid)
@@ -198,6 +203,7 @@ namespace KeywordsApp.HostedServices
 
                 var errorMsg = string.Format("Unknown exception occur for keyword {0}", keyword.KeywordId);
                 _logger.LogError(0, errorMsg, e);
+                _logger.LogError(0, e.Message);
             }
             finally
             {
