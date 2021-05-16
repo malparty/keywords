@@ -44,6 +44,7 @@ namespace KeywordsApp
             .AddDefaultUI();
 
             services.AddTransient<IEmailSender, EmailSender>();
+
             services.Configure<AuthMessageSenderOptions>(Configuration);
             services.Configure<UploadFormOptions>(Configuration);
 
@@ -52,6 +53,7 @@ namespace KeywordsApp
             services.AddSignalR();
             services.AddHostedService<ParserService>();
             services.AddSingleton<IGoogleParser, GoogleParser>();
+            services.AddSingleton<IHttpRequestService, HttpRequestService>();
 
             services.AddScoped<IUserClaimsPrincipalFactory<UserEntity>, UserClaimsPrincipalFactory>();
 

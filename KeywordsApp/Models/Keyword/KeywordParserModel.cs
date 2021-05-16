@@ -13,6 +13,7 @@ namespace KeywordsApp.Models.Keyword
         public string Name { get; set; }
         public string RawHtmlContent { get; set; }
 
+        public ParsingStatus ParsingStatus { get; set; }
         public HtmlNode BodyNode { get; set; }
 
         private HtmlDocument _pageDocument;
