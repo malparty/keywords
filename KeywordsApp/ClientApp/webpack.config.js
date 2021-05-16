@@ -9,10 +9,9 @@ console.log('Using NODE_ENV = ' + process.env.NODE_ENV);
 module.exports = {
   mode: isDevelopment ? 'development' : 'production',
   entry: {
-    site: './src/js/site.js',
-    vendor: './src/js/vendor.js',
+    sitejs: './src/js/site.js',
     vendorcss: './src/css/vendor.scss',
-    sitecss: './src/css/site.scss',
+    site: './src/css/site.scss',
   },
   output: {
     path: path.resolve(__dirname, '..', 'wwwroot', 'dist'),
@@ -22,6 +21,29 @@ module.exports = {
   },
   optimization: {
     minimize: !isDevelopment,
+    splitChunks: {
+      chunks: 'all',
+      minSize: 20000,
+      minRemainingSize: 0,
+      minChunks: 1,
+      maxAsyncRequests: 30,
+      maxInitialRequests: 30,
+      enforceSizeThreshold: 50000,
+      cacheGroups: {
+        defaultVendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10,
+          reuseExistingChunk: true,
+          name: 'vendor',
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true,
+          name: 'site',
+        },
+      },
+    },
   },
   plugins: [
     new MiniCssExtractPlugin({
@@ -33,8 +55,6 @@ module.exports = {
       jQuery: 'jquery',
       'window.jQuery': "jquery'",
       'window.$': 'jquery',
-      signalR: '@microsoft/signalr',
-      validate: 'jquery-validation',
     }),
   ],
   module: {

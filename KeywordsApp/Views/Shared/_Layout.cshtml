@@ -22,11 +22,11 @@
     <title>@ViewData["Title"] - Keywords App</title>
 <environment include="Development">
     <link rel="stylesheet" href="~/dist/vendorcss.css" />
-    <link rel="stylesheet" href="~/dist/sitecss.css" />
+    <link rel="stylesheet" href="~/dist/site.css" />
 </environment>
 <environment exclude="Development">
     <link rel="stylesheet" href="~/dist/vendorcss.min.css" />
-    <link rel="stylesheet" href="~/dist/sitecss.min.css" />
+    <link rel="stylesheet" href="~/dist/site.min.css" />
 </environment>
 
 </head>
@@ -72,12 +72,12 @@
     <environment include="Development">
         <script src="~/dist/vendor.js" defer></script>
         @await RenderSectionAsync("Scripts", required: false)
-        <script src="~/dist/site.js" defer></script>
+        <script src="~/dist/sitejs.js" defer></script>
     </environment>
     <environment exclude="Development">
         <script src="~/dist/vendor.min.js" defer></script>
         @await RenderSectionAsync("Scripts", required: false)
-        <script src="~/dist/site.min.js" defer></script>
+        <script src="~/dist/sitejs.min.js" defer></script>
     </environment>
         
 </body>
