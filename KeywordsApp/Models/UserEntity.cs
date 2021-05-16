@@ -19,6 +19,7 @@ namespace KeywordsApp.Models
         [Column(TypeName = "character varying(100)")]
         public string LastName { get; set; }
 
+        // Files Entities
         public IEnumerable<FileEntity> CsvFiles { get; set; }
     }
 
