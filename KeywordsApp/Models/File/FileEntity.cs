@@ -8,7 +8,6 @@ using System.Linq;
 
 namespace KeywordsApp.Models.File
 {
-
     [Table("Files")]
     [Index(nameof(CreatedDate), nameof(Name))]
     public class FileEntity
@@ -18,14 +17,18 @@ namespace KeywordsApp.Models.File
         [Column(TypeName = "character varying(256)")]
         public string Name { get; set; }
 
+        public DateTime CreatedDate { get; set; }
+
+        // Created By User entity
         [Required]
         public string CreatedByUserId { get; set; }
         public UserEntity CreatedByUser { get; set; }
 
-        public DateTime CreatedDate { get; set; }
-
+        // Keywords Entities
         public IEnumerable<KeywordEntity> Keywords { get; set; }
+
         public FileEntity() { }
+
         public FileEntity(string userId, List<string> keywords, string fileName)
         {
             CreatedByUserId = userId;
@@ -33,6 +36,7 @@ namespace KeywordsApp.Models.File
             parseKeywords(keywords);
             Name = fileName;
         }
+
         private void parseKeywords(List<string> keywords)
         {
             Keywords = keywords.Select(x => new KeywordEntity(x)).ToList();

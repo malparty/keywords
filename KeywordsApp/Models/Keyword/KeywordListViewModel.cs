@@ -4,13 +4,15 @@ using X.PagedList;
 
 namespace KeywordsApp.Models.Keyword
 {
-
     public class KeywordListViewModel
     {
-        public KeywordOrderBy OrderBy { get; set; }
         public int FileId { get; set; }
+
         public string Search { get; set; }
+
         public bool IsShowResults { get; set; }
+
+        public KeywordOrderBy OrderBy { get; set; }
         public IPagedList<KeywordEntity> Keywords { get; set; }
         public PagedListOptions PageListOptions { get { return new PagedListOptions(); } }
 
@@ -25,8 +27,8 @@ namespace KeywordsApp.Models.Keyword
                     return Keywords.GroupBy(x => x.Name.ToLower()[0].ToString());
             }
         }
-
     }
+
     public enum KeywordOrderBy
     {
         NameAsc = 1,

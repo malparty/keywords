@@ -2,21 +2,21 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 
-
 namespace KeywordsApp.Models.Keyword
 {
     public class KeywordParserModel
     {
         public int FileId { get; set; }
         public int KeywordId { get; set; }
+
         public string UserId { get; set; }
         public string Name { get; set; }
         public string RawHtmlContent { get; set; }
+
         public HtmlNode BodyNode { get; set; }
 
         private HtmlDocument _pageDocument;
         private KeywordResultParserModel _keywordResult;
-
 
         public KeywordResultParserModel ParseHtml()
         {
@@ -39,6 +39,7 @@ namespace KeywordsApp.Models.Keyword
             return _keywordResult;
 
         }
+
         private bool LoadHtmlContent()
         {
             _pageDocument = new HtmlDocument();
@@ -52,6 +53,7 @@ namespace KeywordsApp.Models.Keyword
             _keywordResult.HtmlCode = RawHtmlContent;
             return true;
         }
+
         private void ParseRequestAdWordsCount()
         {
             var countMerchantAds = BodyNode.SelectNodes("//a")
@@ -64,10 +66,12 @@ namespace KeywordsApp.Models.Keyword
             _keywordResult.AdWordsCount = countMerchantAds + countBasicAds;
 
         }
+
         private void ParseRequestLinkCount()
         {
             _keywordResult.LinkCount = BodyNode.SelectNodes("//a").Count;
         }
+
         private void ParseRequestStats()
         {
             // About 340,000,000 results (0.68 seconds) 
@@ -88,6 +92,7 @@ namespace KeywordsApp.Models.Keyword
             ParseRequestStatsResultCount(requestStatsString);
 
         }
+
         private void ParseRequestStatsDuration(string requestStatsString)
         {
             // (0,78 giay)
@@ -132,6 +137,7 @@ namespace KeywordsApp.Models.Keyword
 
             _keywordResult.RequestDuration = seconds * 1000 + decimals * 10;
         }
+
         private void ParseRequestStatsResultCount(string requestStatsString)
         {
             // About 340,000,000 results (0.68 seconds)
@@ -155,6 +161,4 @@ namespace KeywordsApp.Models.Keyword
             _keywordResult.TotalThouthandResultsCount = resultCount / 1000;
         }
     }
-
-
 }

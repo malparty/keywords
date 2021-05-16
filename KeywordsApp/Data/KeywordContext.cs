@@ -9,12 +9,12 @@ namespace KeywordsApp.Data
 {
     public class KeywordContext : IdentityDbContext<UserEntity>
     {
+        public DbSet<KeywordEntity> Keywords { get; set; }
+        public DbSet<FileEntity> Files { get; set; }
+
         public KeywordContext(DbContextOptions<KeywordContext> options) : base(options)
         {
         }
-
-        public DbSet<KeywordEntity> Keywords { get; set; }
-        public DbSet<FileEntity> Files { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

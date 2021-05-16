@@ -18,7 +18,5 @@ namespace KeywordsApp.Models
                 };
             }
         }
-
     }
-
 }
