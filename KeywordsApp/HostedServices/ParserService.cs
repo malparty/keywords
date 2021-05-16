@@ -8,12 +8,10 @@ namespace KeywordsApp.HostedServices
 {
     public class ParserService : BackgroundService
     {
-        private readonly ILogger<ParserService> _logger;
         private readonly IGoogleParser _googleParser;
 
-        public ParserService(ILogger<ParserService> logger, IGoogleParser googleParser)
+        public ParserService(IGoogleParser googleParser)
         {
-            _logger = logger;
             _googleParser = googleParser;
         }
 
@@ -21,16 +19,8 @@ namespace KeywordsApp.HostedServices
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Worker running at: {Time}", DateTime.Now);
-                await _googleParser.ParseAsync(false);
-                // No action until current parsing is done
-                while (_googleParser.IsParsing)
-                {
-                    await Task.Delay(1000);
-                }
-                // Wait 5 seconds until next parsing check
-                await Task.Delay(5000);
-
+                _googleParser.ParseAsync(false);
+                await Task.Delay(1000); // parsing every seconds
             }
         }
     }

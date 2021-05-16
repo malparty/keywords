@@ -30,8 +30,14 @@ namespace KeywordsApp.HostedServices
             _scopeFactory = scopeFactory;
         }
 
-        public async Task ParseAsync(bool includeFailed = false)
+        public async void ParseAsync(bool includeFailed = false)
         {
+            // only starts when not already parsing
+            if (IsParsing)
+                return;
+
+            _logger.LogInformation("Google parser running at: {Time}", DateTime.Now);
+            
             var currentKeywordId = 0;
             try
             {

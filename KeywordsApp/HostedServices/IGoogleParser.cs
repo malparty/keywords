@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 
 namespace KeywordsApp.HostedServices
 {
@@ -8,6 +7,6 @@ namespace KeywordsApp.HostedServices
         // We do not include Failed within the parser as 
         // failed keywords needs manual investigation 
         // from the dev team
-        public Task ParseAsync(bool includeFailed = false);
+        public void ParseAsync(bool includeFailed = false);
     }
 }
