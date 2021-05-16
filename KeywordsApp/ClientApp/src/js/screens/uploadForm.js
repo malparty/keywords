@@ -1,9 +1,13 @@
 class UploadForm {
   MAX_UPLOAD_SIZE = 10000; // 10kb
-  form = null;
+
   constructor(form) {
     if (form.length > 0 && form.prop('nodeName') === 'FORM') {
       this.form = form;
+
+      this.errorMsgElt = this.form.find('.csv-form-error-msg');
+      this.fileNameElt = this.form.find('.csv-form-file-name');
+
       form.on('change', this.onFormChange);
     } else {
       console.error('UploadForm needs a <form> object to work properly.');
@@ -11,16 +15,15 @@ class UploadForm {
   }
 
   onFormChange = () => {
-    const errorMsgElt = this.form.find('.csv-form-error-msg');
-    const fileNameElt = this.form.find('.csv-form-file-name');
     const csvFileInput = this.form.find('.csv-form-file-input');
     const uploadedMsgElt = this.form.find('.csv-form-uploaded-msg');
+
     // Reset texts
-    errorMsgElt.fadeOut();
+    this.errorMsgElt.fadeOut();
     uploadedMsgElt.fadeOut();
-    errorMsgElt.html('');
-    fileNameElt.html('');
-    fileNameElt.removeClass('text-danger');
+    this.errorMsgElt.html('');
+    this.fileNameElt.html('');
+    this.fileNameElt.removeClass('text-danger');
 
     if (csvFileInput[0].files.length > 0) {
       const file = csvFileInput[0].files[0];
@@ -28,25 +31,27 @@ class UploadForm {
       // Limit to less than 1mb
       if (file.size > this.MAX_UPLOAD_SIZE) {
         // File too big.
-        errorMsgElt.html(
+        this.showError(
           `Please select a file under ${this.MAX_UPLOAD_SIZE / 10000}Kb.`
         );
-        errorMsgElt.fadeIn(250);
-        fileNameElt.addClass('text-danger');
       }
       // Ensure extension is '.csv'
       else if (file.name.match(/\.[0-9a-z]+$/i)[0] != '.csv') {
         // Wrong file extension
-        errorMsgElt.html(`Please select a .csv file.`);
-        errorMsgElt.fadeIn(250);
-        fileNameElt.addClass('text-danger');
+        this.showError(`Please select a .csv file.`);
       } else {
         uploadedMsgElt.fadeIn(250);
         // Submit Ajax form
         this.submitAjax();
       }
-      fileNameElt.html(file.name);
+      this.fileNameElt.html(file.name);
     }
+  };
+
+  showError = (errMsg) => {
+    this.errorMsgElt.html(errMsg);
+    this.errorMsgElt.fadeIn(250);
+    this.fileNameElt.addClass('text-danger');
   };
 
   submitAjax = () => {
