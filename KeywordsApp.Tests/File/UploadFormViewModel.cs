@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using KeywordsApp.Models.File;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace KeywordsApp.Tests.File
@@ -182,25 +181,28 @@ namespace KeywordsApp.Tests.File
 
     public class StubFormFile : IFormFile
     {
+        public long Length { get; set; }
+
+        public string FileName { get; set; }
+        public string ContentType => throw new NotImplementedException();
+        public string ContentDisposition => throw new NotImplementedException();
+        public string Name => throw new NotImplementedException();
+
+        public IHeaderDictionary Headers => throw new NotImplementedException();
+
+        private Stream _fakeStream;
+
         public StubFormFile(string csvContent = "Hello,World,")
         {
             _fakeStream = new MemoryStream(Encoding.UTF8.GetBytes(csvContent));
             FileName = "normal.csv";
             Length = 1;
         }
-        private Stream _fakeStream;
-        public long Length { get; set; }
-        public string ContentType => throw new NotImplementedException();
 
-        public string ContentDisposition => throw new NotImplementedException();
-
-        public IHeaderDictionary Headers => throw new NotImplementedException();
-
-
-        public string Name => throw new NotImplementedException();
-
-        public string FileName { get; set; }
-
+        public Stream OpenReadStream()
+        {
+            return _fakeStream;
+        }
         public void CopyTo(Stream target)
         {
             throw new NotImplementedException();
@@ -209,11 +211,6 @@ namespace KeywordsApp.Tests.File
         public Task CopyToAsync(Stream target, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
-        }
-
-        public Stream OpenReadStream()
-        {
-            return _fakeStream;
         }
     }
 }

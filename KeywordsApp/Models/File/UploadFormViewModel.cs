@@ -12,13 +12,18 @@ namespace KeywordsApp.Models.File
     public class UploadFormViewModel
     {
         const int NAME_MAX_LENGTH = 256;
-        private int _maxCsvFileSizeUpload;
-        public List<string> Keywords { get; set; }
-        public string FileName { get; internal set; }
         public int PreviousFileId { get; set; }
+
+        public string FileName { get; internal set; }
         public string ErrorMsg { get; set; }
         public string SuccessMsg { get; set; }
+
         public bool IsValid { get { return string.IsNullOrEmpty(ErrorMsg); } }
+
+        public List<string> Keywords { get; set; }
+
+        private int _maxCsvFileSizeUpload;
+
 
         public UploadFormViewModel(IFormFile csvFile, IConfiguration config)
         {
@@ -32,6 +37,7 @@ namespace KeywordsApp.Models.File
 
             parse(csvFile);
         }
+
         private void initConfig(IConfiguration config)
         {
             _maxCsvFileSizeUpload = int.Parse(config["MaxCsvFileSizeUpload"]);
@@ -74,6 +80,7 @@ namespace KeywordsApp.Models.File
                 ErrorMsg = "Keywords with specical chars (<>=:.{}[]...) are not allowed.";
 
         }
+
         private bool parseUntrustedFileName(string untrustedFileName)
         {
             string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", @"<>:\\\{\}\|\?\*\[\]\+");
@@ -89,6 +96,5 @@ namespace KeywordsApp.Models.File
 
             return IsValid;
         }
-
     }
 }
