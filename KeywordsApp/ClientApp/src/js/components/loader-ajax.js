@@ -1,11 +1,11 @@
-import $ from 'jquery';
-
-/// SectionDataLoader
-/// Enable to load section content from ajax query
-/// <section data-load-ajax="#URL">#LOADING MSG</section>
 class SectionDataLoader {
-  initLoader = () => {
-    $('section[data-load-ajax]').map((index, elt) => {
+  /**
+   * SectionDataLoader
+   * Enable to load content from ajax query
+   * @param  {object} container [Jquery object to receive html content]
+   */
+  constructor(container) {
+    container.map((index, elt) => {
       var element = $(elt);
       element.load(element.data('load-ajax'), (rsp, status) => {
         if (status == 'error') {
@@ -14,8 +14,9 @@ class SectionDataLoader {
         }
       });
     });
-  };
+  }
 }
 $(function () {
-  new SectionDataLoader().initLoader();
+  const section = $('section[data-load-ajax]');
+  new SectionDataLoader(section);
 });

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 class UploadForm {
   MAX_UPLOAD_SIZE = 10000; // 10kb
   form = $('.csv-form');
