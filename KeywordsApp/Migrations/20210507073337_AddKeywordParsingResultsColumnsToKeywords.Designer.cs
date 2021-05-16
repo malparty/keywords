@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KeywordsApp.Migrations
 {
     [DbContext(typeof(KeywordContext))]
-    [Migration("20210429094001_addIndexes")]
-    partial class addIndexes
+    [Migration("20210507073337_AddKeywordParsingResultsColumnsToKeywords")]
+    partial class AddKeywordParsingResultsColumnsToKeywords
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,24 +21,76 @@ namespace KeywordsApp.Migrations
                 .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("KeywordsApp.Models.Keyword", b =>
+            modelBuilder.Entity("KeywordsApp.Models.File.FileEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<string>("CreatedByUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("CreatedDate", "Name");
+
+                    b.ToTable("Files");
+                });
+
+            modelBuilder.Entity("KeywordsApp.Models.Keyword.KeywordEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AdWordsCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FileId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("HtmlCode")
+                        .HasColumnType("text");
+
+                    b.Property<int>("LinkCount")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .HasColumnType("character varying(200)");
 
+                    b.Property<DateTime?>("ParsedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("ParsingStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RequestDuration")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalThouthandResultsCount")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("FileId");
 
                     b.HasIndex(new[] { "Name" }, "NameIndex");
 
                     b.ToTable("Keywords");
                 });
 
-            modelBuilder.Entity("KeywordsApp.Models.User", b =>
+            modelBuilder.Entity("KeywordsApp.Models.UserEntity", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -244,6 +296,28 @@ namespace KeywordsApp.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("KeywordsApp.Models.File.FileEntity", b =>
+                {
+                    b.HasOne("KeywordsApp.Models.UserEntity", "CreatedByUser")
+                        .WithMany("CsvFiles")
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedByUser");
+                });
+
+            modelBuilder.Entity("KeywordsApp.Models.Keyword.KeywordEntity", b =>
+                {
+                    b.HasOne("KeywordsApp.Models.File.FileEntity", "File")
+                        .WithMany("Keywords")
+                        .HasForeignKey("FileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("File");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -255,7 +329,7 @@ namespace KeywordsApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("KeywordsApp.Models.User", null)
+                    b.HasOne("KeywordsApp.Models.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -264,7 +338,7 @@ namespace KeywordsApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("KeywordsApp.Models.User", null)
+                    b.HasOne("KeywordsApp.Models.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -279,7 +353,7 @@ namespace KeywordsApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KeywordsApp.Models.User", null)
+                    b.HasOne("KeywordsApp.Models.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -288,11 +362,21 @@ namespace KeywordsApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("KeywordsApp.Models.User", null)
+                    b.HasOne("KeywordsApp.Models.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("KeywordsApp.Models.File.FileEntity", b =>
+                {
+                    b.Navigation("Keywords");
+                });
+
+            modelBuilder.Entity("KeywordsApp.Models.UserEntity", b =>
+                {
+                    b.Navigation("CsvFiles");
                 });
 #pragma warning restore 612, 618
         }

@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KeywordsApp.Migrations
 {
     [DbContext(typeof(KeywordContext))]
-    [Migration("20210429075302_identity-user-table")]
-    partial class identityusertable
+    [Migration("20210429075302_CreateAuthenticationTables")]
+    partial class CreateAuthenticationTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

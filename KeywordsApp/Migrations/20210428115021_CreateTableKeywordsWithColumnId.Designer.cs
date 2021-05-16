@@ -9,8 +9,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KeywordsApp.Migrations
 {
     [DbContext(typeof(KeywordContext))]
-    [Migration("20210428115238_fixNameProperty")]
-    partial class fixNameProperty
+    [Migration("20210428115021_CreateTableKeywordsWithColumnId")]
+    partial class CreateTableKeywordsWithColumnId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,9 +26,6 @@ namespace KeywordsApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

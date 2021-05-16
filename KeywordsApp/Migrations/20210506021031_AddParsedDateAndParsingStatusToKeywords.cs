@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace KeywordsApp.Migrations
 {
-    public partial class keywordparsingbase : Migration
+    public partial class AddParsedDateAndParsingStatusToKeywords : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

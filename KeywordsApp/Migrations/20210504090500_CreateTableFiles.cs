@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace KeywordsApp.Migrations
 {
-    public partial class FirstFileEntity : Migration
+    public partial class CreateTableFiles : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

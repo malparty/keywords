@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KeywordsApp.Migrations
 {
     [DbContext(typeof(KeywordContext))]
-    [Migration("20210504090500_First-FileEntity")]
-    partial class FirstFileEntity
+    [Migration("20210510060123_UpdateTotalThouthandResultsCountFromIntToDoubleToKeywords")]
+    partial class UpdateTotalThouthandResultsCountFromIntToDoubleToKeywords
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -54,11 +54,32 @@ namespace KeywordsApp.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int>("AdWordsCount")
+                        .HasColumnType("integer");
+
                     b.Property<int>("FileId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("HtmlCode")
+                        .HasColumnType("text");
+
+                    b.Property<int>("LinkCount")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("ParsedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("ParsingStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RequestDuration")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("TotalThouthandResultsCount")
+                        .HasColumnType("double precision");
 
                     b.HasKey("Id");
 
