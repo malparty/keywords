@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace KeywordsApp.Migrations
 {
-    public partial class firstSample : Migration
+    public partial class CreateTableKeywordsWithColumnId : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

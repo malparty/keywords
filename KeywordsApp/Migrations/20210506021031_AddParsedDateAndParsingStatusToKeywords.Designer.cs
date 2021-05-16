@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KeywordsApp.Migrations
 {
     [DbContext(typeof(KeywordContext))]
-    [Migration("20210507073337_Add-keyword-parsing-results")]
-    partial class Addkeywordparsingresults
+    [Migration("20210506021031_AddParsedDateAndParsingStatusToKeywords")]
+    partial class AddParsedDateAndParsingStatusToKeywords
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -54,16 +54,7 @@ namespace KeywordsApp.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("AdWordsCount")
-                        .HasColumnType("integer");
-
                     b.Property<int>("FileId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("HtmlCode")
-                        .HasColumnType("text");
-
-                    b.Property<int>("LinkCount")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -73,12 +64,6 @@ namespace KeywordsApp.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("ParsingStatus")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RequestDuration")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TotalThouthandResultsCount")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");

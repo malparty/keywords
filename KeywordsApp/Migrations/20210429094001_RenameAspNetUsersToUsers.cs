@@ -2,7 +2,7 @@
 
 namespace KeywordsApp.Migrations
 {
-    public partial class addIndexes : Migration
+    public partial class RenameAspNetUsersToUsers : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

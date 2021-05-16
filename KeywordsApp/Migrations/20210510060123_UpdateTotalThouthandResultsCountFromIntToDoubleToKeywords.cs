@@ -2,7 +2,7 @@
 
 namespace KeywordsApp.Migrations
 {
-    public partial class switchresultcounttodouble : Migration
+    public partial class UpdateTotalThouthandResultsCountFromIntToDoubleToKeywords : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -2,7 +2,7 @@
 
 namespace KeywordsApp.Migrations
 {
-    public partial class Addkeywordparsingresults : Migration
+    public partial class AddKeywordParsingResultsColumnsToKeywords : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

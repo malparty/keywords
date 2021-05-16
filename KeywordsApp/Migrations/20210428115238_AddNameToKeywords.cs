@@ -2,7 +2,7 @@
 
 namespace KeywordsApp.Migrations
 {
-    public partial class fixNameProperty : Migration
+    public partial class AddNameToKeywords : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
