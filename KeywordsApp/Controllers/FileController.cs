@@ -31,15 +31,20 @@ namespace KeywordsApp.Controllers
         public IActionResult Index()
         {
             var model = _dbContext.Files.Where(x => x.CreatedByUserId == UserId)
-                .Select(x => new FileViewModel
-                {
-                    FileId = x.Id,
-                    Name = x.Name,
-                    ShowProgressBar = true,
-                    CreatedDate = x.CreatedDate,
-                    TotalKeywordsCount = x.Keywords.Count(),
-                    ParsedKeywordsCount = x.Keywords.Where(y => y.ParsingStatus == ParsingStatus.Succeed).Count()
-                })
+                .Select(
+                    x => new FileViewModel
+                    {
+                        FileId = x.Id,
+                        Name = x.Name,
+                        ShowProgressBar = true,
+                        CreatedDate = x.CreatedDate,
+                        TotalKeywordsCount = x.Keywords.Count(),
+                        ParsedKeywordsCount = x.Keywords
+                            .Where(
+                                y => y.ParsingStatus == ParsingStatus.Succeed
+                            )
+                            .Count()
+                    })
                 .OrderByDescending(x => x.CreatedDate)
                 .Take(4)
                 .ToList();
@@ -50,16 +55,19 @@ namespace KeywordsApp.Controllers
         public IActionResult Details(int fileId)
         {
             var model = _dbContext.Files.Where(x => x.CreatedByUserId == UserId && x.Id == fileId)
-            .Select(x => new FileViewModel
-            {
-                FileId = x.Id,
-                Name = x.Name,
-                ShowProgressBar = true,
-                ParsedKeywordsCount = x.Keywords.Count(y => y.ParsingStatus == ParsingStatus.Succeed),
-                TotalKeywordsCount = x.Keywords.Count(),
-                CreatedDate = x.CreatedDate
-            })
-            .FirstOrDefault();
+                .Select(
+                    x => new FileViewModel
+                    {
+                        FileId = x.Id,
+                        Name = x.Name,
+                        ShowProgressBar = true,
+                        ParsedKeywordsCount = x.Keywords.Count(
+                            y => y.ParsingStatus == ParsingStatus.Succeed
+                        ),
+                        TotalKeywordsCount = x.Keywords.Count(),
+                        CreatedDate = x.CreatedDate
+                    })
+                .FirstOrDefault();
 
             if (model == null)
                 return NotFound();
@@ -126,15 +134,22 @@ namespace KeywordsApp.Controllers
             {
                 Search = search,
             };
-            model.Files = query.Select(x => new FileViewModel
-            {
-                CreatedDate = x.CreatedDate,
-                FileId = x.Id,
-                Name = x.Name,
-                ShowProgressBar = false,
-                ParsedKeywordsCount = x.Keywords.Where(k => k.ParsingStatus == ParsingStatus.Succeed).Count(),
-                TotalKeywordsCount = x.Keywords.Count()
-            }).ToPagedList(page, 20);
+            model.Files = query
+                .Select(
+                    x => new FileViewModel
+                    {
+                        CreatedDate = x.CreatedDate,
+                        FileId = x.Id,
+                        Name = x.Name,
+                        ShowProgressBar = false,
+                        ParsedKeywordsCount = x.Keywords.Where(
+                            k => k.ParsingStatus == ParsingStatus.Succeed
+                        )
+                        .Count(),
+                        TotalKeywordsCount = x.Keywords.Count()
+                    }
+                )
+                .ToPagedList(page, 20);
 
             return View(model);
         }

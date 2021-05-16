@@ -2,3 +2,7 @@
 quote_type = single
 indent_style = space
 indent_size = 2
+[*.cs]
+quote_type = double
+indent_style = space
+indent_size = 4
