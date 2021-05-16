@@ -7,6 +7,8 @@ class UploadForm {
 
       this.errorMsgElt = this.form.find('.csv-form-error-msg');
       this.fileNameElt = this.form.find('.csv-form-file-name');
+      this.csvFileInput = this.form.find('.csv-form-file-input');
+      this.uploadedMsgElt = this.form.find('.csv-form-uploaded-msg');
 
       form.on('change', this.onFormChange);
     } else {
@@ -14,38 +16,51 @@ class UploadForm {
     }
   }
 
-  onFormChange = () => {
-    const csvFileInput = this.form.find('.csv-form-file-input');
-    const uploadedMsgElt = this.form.find('.csv-form-uploaded-msg');
-
-    // Reset texts
+  // Reset info & errors
+  resetText = () => {
     this.errorMsgElt.fadeOut();
-    uploadedMsgElt.fadeOut();
+    this.uploadedMsgElt.fadeOut();
     this.errorMsgElt.html('');
     this.fileNameElt.html('');
     this.fileNameElt.removeClass('text-danger');
+  };
 
-    if (csvFileInput[0].files.length > 0) {
-      const file = csvFileInput[0].files[0];
+  // 'change' form event handler
+  onFormChange = () => {
+    this.resetText();
 
-      // Limit to less than 1mb
-      if (file.size > this.MAX_UPLOAD_SIZE) {
-        // File too big.
-        this.showError(
-          `Please select a file under ${this.MAX_UPLOAD_SIZE / 10000}Kb.`
-        );
-      }
-      // Ensure extension is '.csv'
-      else if (file.name.match(/\.[0-9a-z]+$/i)[0] != '.csv') {
-        // Wrong file extension
-        this.showError(`Please select a .csv file.`);
-      } else {
-        uploadedMsgElt.fadeIn(250);
-        // Submit Ajax form
-        this.submitAjax();
-      }
-      this.fileNameElt.html(file.name);
+    // Perform client side Validations
+    const isFileValid = this.validateFile();
+
+    if (isFileValid) {
+      // Show loading msg
+      this.uploadedMsgElt.fadeIn(250);
+      // Submit Ajax form
+      this.submitAjax();
     }
+  };
+
+  validateFile = () => {
+    if (this.csvFileInput[0].files.length <= 0) return false;
+
+    const file = this.csvFileInput[0].files[0];
+
+    // Limit to less than 1mb
+    if (file.size > this.MAX_UPLOAD_SIZE) {
+      // File too big.
+      this.showError(
+        `Please select a file under ${this.MAX_UPLOAD_SIZE / 10000}Kb.`
+      );
+      return false;
+    }
+    // Ensure extension is '.csv'
+    if (file.name.match(/\.[0-9a-z]+$/i)[0] != '.csv') {
+      // Wrong file extension
+      this.showError(`Please select a .csv file.`);
+      return false;
+    }
+    this.fileNameElt.html(file.name);
+    return true;
   };
 
   showError = (errMsg) => {
@@ -105,6 +120,8 @@ class UploadForm {
     });
   };
 }
+
+// Init at page loaded time
 $(function () {
   const form = $('.csv-form');
   new UploadForm(form);
