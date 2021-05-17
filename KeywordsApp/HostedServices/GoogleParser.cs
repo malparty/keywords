@@ -14,45 +14,29 @@ namespace KeywordsApp.HostedServices
 {
     public class GoogleParser : IGoogleParser
     {
-        public List<KeywordParserModel> FetchingKeywords { get; set; }
+        // Processing pool, enable to know what kw are being processed
+        public List<KeywordParserModel> ToBeParsedKeywords { get; set; }
 
-        // We only start to parse keywords not being parsed
-        public List<KeywordParserModel> ToBeParsedKeywords
-        {
-            get
-            {
-                return FetchingKeywords
-                    .Where(x => x.ParsingStatus != ParsingStatus.Parsing)
-                    .ToList();
-            }
-        }
-        public IEnumerable<int> FetchingKeywordIds
-        {
-            get
-            {
-                return FetchingKeywords.Select(x => x.KeywordId);
-            }
-        }
         private readonly IHubContext<ParserHub, IParser> _parserHub;
         private readonly ILogger<ParserService> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly IHttpRequestService _requestService;
 
-
-        public GoogleParser(ILogger<ParserService> logger, IHubContext<ParserHub, IParser> parserHub, IServiceScopeFactory scopeFactory, IHttpRequestService requestService)
+        public GoogleParser(ILogger<ParserService> logger, IHubContext<ParserHub, IParser> parserHub, IServiceScopeFactory scopeFactory)
         {
             _logger = logger;
             _parserHub = parserHub;
             _scopeFactory = scopeFactory;
-            _requestService = requestService;
+            ToBeParsedKeywords = new List<KeywordParserModel>();
         }
 
         public async void ParseAsync(bool includeFailed = true)
         {
-            _logger.LogInformation("Google parser running at: {Time}", DateTime.Now);
+            // Only parse when all current parsing are done
+            if (ToBeParsedKeywords.Count > 0)
+                return;
 
-            // Update what needs to be parsed.
-            await UpdateFetchingKeywordsAsync(includeFailed);
+            // Get what needs to be parsed.
+            await GetToBeParsedKeywordsAsync(includeFailed);
 
             // Parse keywords that are not being parsed
             foreach (var keyword in ToBeParsedKeywords)
@@ -75,7 +59,7 @@ namespace KeywordsApp.HostedServices
             }
         }
 
-        private async void SendNotificationAsync(KeywordParserModel keyword, string errorMsg)
+        private async Task SendNotificationAsync(KeywordParserModel keyword, string errorMsg)
         {
             // Get file progress %
             int? percent;
@@ -98,7 +82,7 @@ namespace KeywordsApp.HostedServices
                 .KeywordStatusUpdate(keyword.FileId, percent ?? 0, keyword.KeywordId, keyword.Name, status, errorMsg);
         }
 
-        private async void ParseKeywordAsync(KeywordParserModel keyword)
+        private async Task ParseKeywordAsync(KeywordParserModel keyword)
         {
             await UpdateKeywordStatusAsync(keyword.KeywordId, ParsingStatus.Parsing);
             _logger.LogInformation(string.Format("Parsing start for: {0}", keyword.Name));
@@ -107,7 +91,11 @@ namespace KeywordsApp.HostedServices
             try
             {
                 // Get Html Content
-                keyword.RawHtmlContent = await _requestService.QueryHtmlContentAsync(keyword.Name, keyword.KeywordId);
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    var requestService = scope.ServiceProvider.GetRequiredService<IHttpRequestService>();
+                    keyword.RawHtmlContent = await requestService.QueryHtmlContentAsync(keyword.Name, keyword.KeywordId);
+                }
 
                 if (string.IsNullOrEmpty(keyword.RawHtmlContent))
                 {
@@ -129,6 +117,11 @@ namespace KeywordsApp.HostedServices
                 {
                     errorMsg = "Could not store changes in Db while parsing Keyword.";
                 }
+                else
+                {
+                    await UpdateKeywordStatusAsync(keyword.KeywordId, ParsingStatus.Succeed);
+                    _logger.LogInformation(string.Format("Parsing SUCCESS for: {0}", keyword.Name));
+                }
             }
             catch (Exception e)
             {
@@ -138,33 +131,20 @@ namespace KeywordsApp.HostedServices
             }
             finally
             {
+                // Remove current keyword from the processing pool
+                ToBeParsedKeywords.Remove(keyword);
                 SendNotificationAsync(keyword, errorMsg);
             }
         }
 
-        private async Task UpdateFetchingKeywordsAsync(bool includeFailed = false)
+        private async Task GetToBeParsedKeywordsAsync(bool includeFailed = false)
         {
-            if (FetchingKeywords == null)
-            {
-                FetchingKeywords = new List<KeywordParserModel>();
-            }
-            // Remove parsed keywords
-            FetchingKeywords = FetchingKeywords
-                .Where(x => x.ParsingStatus != ParsingStatus.Succeed)
-                .ToList();
-            if (!includeFailed)
-            {
-                FetchingKeywords = FetchingKeywords
-                    .Where(x => x.ParsingStatus != ParsingStatus.Failed)
-                    .ToList();
-            }
-
             // Add new keywords from Db
             using (var scope = _scopeFactory.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<KeywordContext>();
 
-                // All Pending/Failed
+                // All Pending/Parsing/Failed
                 var query = dbContext.Keywords
                     .Where(
                         x => x.ParsingStatus == ParsingStatus.Pending
@@ -175,14 +155,10 @@ namespace KeywordsApp.HostedServices
                                     : false
                             )
                     );
-                // Except those already in FetchingKeywords 
-                query = query
-                    .Where(
-                        x => !FetchingKeywords
-                            .Select(y => y.KeywordId)
-                            .Contains(x.Id)
-                    );
-                var newKeywords = await query.Select(
+
+                ToBeParsedKeywords = await query
+                .OrderBy(x => x.ParsingStatus)
+                .Select(
                     x => new KeywordParserModel
                     {
                         KeywordId = x.Id,
@@ -192,8 +168,6 @@ namespace KeywordsApp.HostedServices
                     }
                 )
                 .ToListAsync();
-
-                FetchingKeywords.AddRange(newKeywords);
             }
         }
 

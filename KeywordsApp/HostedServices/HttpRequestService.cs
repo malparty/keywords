@@ -11,6 +11,12 @@ namespace KeywordsApp.HostedServices
     public class HttpRequestService : IHttpRequestService
     {
         private const string googleUrl = "https://www.google.com/search";
+        private const int MAX_RETRY = 5;
+        private const int DELAY_BEFORE_RETRY = 5000;
+
+        private int _retryCount;
+        private bool _isSucceed;
+        private HttpClient _client;
 
 
         private readonly ILogger<HttpRequestService> _logger;
@@ -19,71 +25,89 @@ namespace KeywordsApp.HostedServices
         public HttpRequestService(ILogger<HttpRequestService> logger)
         {
             _logger = logger;
+            _retryCount = 0;
+            _isSucceed = false;
         }
 
 
         public async Task<string> QueryHtmlContentAsync(string name, int keywordId)
         {
-            const int MAX_RETRY = 5;
-            HttpClient client = new HttpClient();
+            _client = new HttpClient();
             string result = null;
+
+
+            // Retry approach:
+            while (_retryCount < MAX_RETRY && !_isSucceed)
+            {
+                result = await TryQueryHtmlContentAsync(name, keywordId);
+            }
+
+            _client.Dispose();
+
+            return result;
+        }
+
+        public async Task<string> TryQueryHtmlContentAsync(string name, int keywordId)
+        {
             try
             {
-                int retryCount = 0;
-                HttpResponseMessage response = null;
+                // Build request:
+                var request = BuildRequest(name);
 
-                // Retry approach:
-                do
-                {
-                    // Build request:
-                    var request = BuildRequest(name);
-
-                    // Set language to english
-                    request.Headers.AcceptLanguage.ParseAdd("en-US");
-
-                    response = client.SendAsync(request, cancellationToken: CancellationToken.None).Result;
-
-                    // Preventing error 429 - Too many requests
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        retryCount++;
-                        _logger.LogInformation(string.Format("Trying to dispose HttpClient (x{0})", retryCount));
-                        client.Dispose();
-                        client = new HttpClient();
-                    }
-                } // Exit loop with Successful request or Max Retry count reached.
-                while (retryCount < MAX_RETRY && !response.IsSuccessStatusCode);
+                // Send request
+                var response = _client.SendAsync(request, cancellationToken: CancellationToken.None).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
-                    result = await response.Content.ReadAsStringAsync();
+                    // Read Html content
+                    var result = await response.Content.ReadAsStringAsync();
+                    _isSucceed = true;
+
+                    return result;
                 }
-                // Too many requests - bot detected
-                else if ((int)response.StatusCode == 429)
-                {
-                    var errorMsg = string.Format("Response 429 (Too many requests) for keyword {0}", keywordId);
-                    _logger.LogWarning(errorMsg);
-                }
-                // Unknown error, logged as error
+                // Basic Retry (no delay) with HttpClient disposal
                 else
                 {
-                    var errorMsg = string.Format("Response {0} ({1}) for keyword {2}", response.StatusCode, response.ReasonPhrase, keywordId);
-                    _logger.LogError(errorMsg);
+                    await HandleRequestBlockedAsync(false);
                 }
+            }
+            catch (HttpRequestException reqExcep)
+            {
+                await HandleHttpRequestExceptionAsync(reqExcep);
 
             }
             catch (Exception e)
             {
+                if (e.InnerException.GetType() == typeof(HttpRequestException))
+                {
+                    await HandleHttpRequestExceptionAsync((HttpRequestException)e.InnerException);
+                }
+                else
+                {
+                    var errorMsg = string.Format("Unknown exception occur for keyword {0}", keywordId);
+                    _logger.LogError(0, errorMsg, e);
+                    _logger.LogError(0, e.Message);
+                }
+            }
+            return null;
+        }
 
-                var errorMsg = string.Format("Unknown exception occur for keyword {0}", keywordId);
-                _logger.LogError(0, errorMsg, e);
-                _logger.LogError(0, e.Message);
-            }
-            finally
-            {
-                client.Dispose();
-            }
-            return result;
+
+        private async Task HandleHttpRequestExceptionAsync(HttpRequestException e)
+        {
+            _logger.LogError(0, "HttpRequestException catched. Trying to HandleRequestBlockedAsync with delay.", e);
+            await HandleRequestBlockedAsync(true);
+        }
+
+        private async Task HandleRequestBlockedAsync(bool withDelay)
+        {
+            _client.Dispose();
+
+            if (withDelay)
+                await Task.Delay(DELAY_BEFORE_RETRY);
+
+            _client = new HttpClient();
+            _retryCount++;
         }
 
         private HttpRequestMessage BuildRequest(string name)
@@ -111,6 +135,9 @@ namespace KeywordsApp.HostedServices
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("image/apng"));
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/signed-exchange"));
+
+            // Set language to english
+            request.Headers.AcceptLanguage.ParseAdd("en-US");
 
             return request;
         }

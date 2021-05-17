@@ -53,12 +53,15 @@ namespace KeywordsApp
             services.AddSignalR();
             services.AddHostedService<ParserService>();
             services.AddSingleton<IGoogleParser, GoogleParser>();
-            services.AddSingleton<IHttpRequestService, HttpRequestService>();
+            services.AddScoped<IHttpRequestService, HttpRequestService>();
 
             services.AddScoped<IUserClaimsPrincipalFactory<UserEntity>, UserClaimsPrincipalFactory>();
 
             services.AddDbContext<KeywordContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("KeywordConnection"))
+                options.UseNpgsql(Configuration.GetConnectionString("KeywordConnection"), builder =>
+                 {
+                     builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                 })
             );
         }
 
