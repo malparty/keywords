@@ -33,13 +33,19 @@ namespace KeywordsApp.HostedServices
         {
             // Only parse when all current parsing are done
             if (ToBeParsedKeywords.Count > 0)
+            {
+                _logger.LogInformation(string.Format("Parsing ignored as {0} keywords still in process", ToBeParsedKeywords.Count));
                 return;
+            }
 
             // Get what needs to be parsed.
             await GetToBeParsedKeywordsAsync(includeFailed);
 
             // Parse keywords that are not being parsed
-            foreach (var keyword in ToBeParsedKeywords)
+            // Note: the "ToList" will create a copy to ensure 
+            // removing keywords from ToBeParsedKeywords won't
+            // affect the foreach loop
+            foreach (var keyword in ToBeParsedKeywords.ToList())
             {
                 ParseKeywordAsync(keyword);
             }
@@ -84,7 +90,6 @@ namespace KeywordsApp.HostedServices
 
         private async Task ParseKeywordAsync(KeywordParserModel keyword)
         {
-            await UpdateKeywordStatusAsync(keyword.KeywordId, ParsingStatus.Parsing);
             _logger.LogInformation(string.Format("Parsing start for: {0}", keyword.Name));
 
             var errorMsg = "";
@@ -115,6 +120,7 @@ namespace KeywordsApp.HostedServices
                 var isPersistSucceed = await PersistParsedKeyword(keyword.KeywordId, parsingResults);
                 if (!isPersistSucceed)
                 {
+                    await UpdateKeywordStatusAsync(keyword.KeywordId, ParsingStatus.Failed);
                     errorMsg = "Could not store changes in Db while parsing Keyword.";
                 }
                 else
@@ -169,6 +175,7 @@ namespace KeywordsApp.HostedServices
                 )
                 .ToListAsync();
             }
+            _logger.LogInformation(string.Format("Get to be parsed Keyword with {0} keywords.", ToBeParsedKeywords.Count));
         }
 
         private async Task<bool> PersistParsedKeyword(int keywordId, KeywordResultParserModel parsedModel)

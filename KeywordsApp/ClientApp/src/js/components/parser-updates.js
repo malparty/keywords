@@ -5,6 +5,12 @@ var connection = new signalR.HubConnectionBuilder().withUrl('/parser').build();
 connection.on(
   'KeywordStatusUpdate',
   function (fileId, percent, keywordId, keywordName, status, errorMsg) {
+    let effectColor = '#78ff96';
+    if (errorMsg.length > 0) {
+      console.warn(`Failed to parse keyword ${keywordName}`);
+      console.warn(errorMsg);
+      effectColor = '#FF4C0C';
+    }
     // Prepend new keyword in the last parsed keyword UI
     const url = $('#parsedKeywordsList').data('single-load');
     const container = $('#parsedKeywordsListContainer');
@@ -21,7 +27,7 @@ connection.on(
 
       $('#parsedKeywordsListContainer div.card')
         .first()
-        .effect('highlight', { color: '#78ff96' }, 1000);
+        .effect('highlight', { color: effectColor }, 1000);
     });
     // update file percent progress
     const fileContainer = $('#fileCard' + fileId);

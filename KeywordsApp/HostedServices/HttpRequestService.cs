@@ -55,7 +55,7 @@ namespace KeywordsApp.HostedServices
                 var request = BuildRequest(name);
 
                 // Send request
-                var response = _client.SendAsync(request, cancellationToken: CancellationToken.None).Result;
+                var response = await _client.SendAsync(request, cancellationToken: CancellationToken.None);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -63,7 +63,7 @@ namespace KeywordsApp.HostedServices
                     var result = await response.Content.ReadAsStringAsync();
                     _isSucceed = true;
 
-                    return result;
+                    return result;  
                 }
                 // Basic Retry (no delay) with HttpClient disposal
                 else
@@ -74,7 +74,6 @@ namespace KeywordsApp.HostedServices
             catch (HttpRequestException reqExcep)
             {
                 await HandleHttpRequestExceptionAsync(reqExcep);
-
             }
             catch (Exception e)
             {

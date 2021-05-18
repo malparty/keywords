@@ -20,7 +20,7 @@ namespace KeywordsApp.HostedServices
             while (!stoppingToken.IsCancellationRequested)
             {
                 _googleParser.ParseAsync(true);
-                await Task.Delay(5000); // parsing every 5 seconds
+                await Task.Delay(2000); // parsing every 2 seconds
             }
         }
     }
